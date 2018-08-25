@@ -11,7 +11,7 @@ namespace Ads
         public string Ios;
     }
     
-    [CreateAssetMenu(menuName = "Settings/Ads")]
+    [CreateAssetMenu(menuName = "Stencil/Ads")]
     public class AdSettings : Singleton<AdSettings>
     {
         public AdId AppId;
