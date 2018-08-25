@@ -12,7 +12,7 @@ using Util;
 
 namespace Ads.Admob
 {    
-    public class AdmobBannerArea : Controller<AdmobBannerArea>
+    public class AdmobBannerArea : MonoBehaviour
     {            
         public static BannerEvent OnChange;
 
@@ -25,6 +25,8 @@ namespace Ads.Admob
 
         public RectTransform Content => Frame.Instance.Contents;
         public RectTransform Scrim => Frame.Instance.Scrim;
+        
+        public static AdmobBannerArea Instance { get; private set; }
         
         public static float BannerHeight
         {
@@ -54,6 +56,16 @@ namespace Ads.Admob
             _visible = false;
             _banner.Hide();
             Change();
+        }
+
+        private void Awake()
+        {
+            Instance = this;
+        }
+
+        private void OnDestroy()
+        {
+            Instance = Instance == this ? null : Instance;
         }
 
         private static bool _init;
@@ -94,7 +106,7 @@ namespace Ads.Admob
             if (scaler == null) return;
             var ratio = scaler.referenceResolution.x / Screen.width;
             pixelHeight *= ratio;
-            Scrim.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, pixelHeight);
+            Scrim?.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, pixelHeight);
             Content.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, pixelHeight, 
                 ((RectTransform) Content.parent).rect.height - pixelHeight);  
             Debug.Log($"Setting banner height to {pixelHeight}");
