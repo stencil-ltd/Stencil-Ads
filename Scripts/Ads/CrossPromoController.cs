@@ -49,9 +49,15 @@ namespace Ads
         {
             _scene.allowSceneActivation = true;
             if (_scene.isDone)
-                SceneManager.UnloadSceneAsync("Startup");
+                StartCoroutine(GameReady());
             else
-                _scene.completed += operation => SceneManager.UnloadSceneAsync("Startup");
+                _scene.completed += operation => StartCoroutine(GameReady());
+        }
+
+        private IEnumerator GameReady()
+        {
+            yield return null;
+            SceneManager.UnloadSceneAsync(0);
         }
 
         private void OnComplete(object sender, EventArgs e)
