@@ -31,19 +31,23 @@ namespace Ads
         private static bool _init;
         public static void Init()
         {
+            Debug.Log("Attempt to initialize StencilAds");
             if (_init) return;
             _init = true;
         
 #if UNITY_IPHONE && !UNITY_EDITOR
-        SetEnv.Set("JSC_useJIT", "false");
+            Debug.Log("StencilAds disabled webview JIT.");
+            SetEnv.Set("JSC_useJIT", "false");
 #endif
         
 #if STENCIL_ADMOB
-        Interstitial = new AdmobInterstitial(_interstitial);
-        Interstitial.Init();
-        Rewarded = new AdmobRewarded(_rewarded);
-        Rewarded.Init();
+            Debug.Log("StencilAds (admob) initializing");
+            Interstitial = new AdmobInterstitial(_interstitial);
+            Interstitial.Init();
+            Rewarded = new AdmobRewarded(_rewarded);
+            Rewarded.Init();
 #endif
+            Debug.Log("StencilAds initialized");
         }
 
         public static void CheckReload()
