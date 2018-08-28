@@ -1,9 +1,8 @@
-﻿using Ads;
+﻿using System;
 using UnityEngine;
 
 #if STENCIL_ADMOB
 using Ads.Admob;
-using GoogleMobileAds.Api;
 #endif
 
 namespace Ads
@@ -20,6 +19,12 @@ namespace Ads
         public static VideoAd Interstitial { get; private set; }
         public static VideoAd Rewarded { get; private set; }
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        public static void OnSceneLoad()
+        {
+            CheckReload();   
+        }
+        
         public static void InitHouse()
         {
 #if STENCIL_ADMOB
@@ -50,21 +55,29 @@ namespace Ads
             Debug.Log("StencilAds initialized");
         }
 
+        public static VideoAd GetAdByType(AdType type)
+        {
+            switch (type)
+            {
+                case AdType.Banner:
+                    throw new ArgumentException("Banner is not of type video");
+                case AdType.Interstitial:
+                    return Interstitial;
+                case AdType.Rewarded:
+                    return Rewarded;
+                case AdType.House:
+                    return House;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
+        }
+
         public static void CheckReload()
         {
             if (!_init) return;
             Debug.Log("Checking for ad errors...");
-            if (Interstitial.HasError)
-            {
-                Debug.Log("Interstitial error, reload.");
-                Interstitial.Load();
-            }
-            if (Rewarded.HasError)
-            {
-                Debug.Log("Reward error, reload.");
-                Rewarded.Load();
-            }
+            Interstitial?.CheckReload();
+            Rewarded?.CheckReload();
         }
-
     }
 }

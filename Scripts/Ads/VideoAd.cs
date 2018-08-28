@@ -57,6 +57,13 @@ namespace Ads
             IsLoading = true;
             LoadInternal();
         }
+        
+        public void CheckReload()
+        {
+            if (!HasError) return;
+            Debug.Log($"{GetType()} error, reload.");
+            Load();
+        }
 
         protected void NotifyLoad()
         {
