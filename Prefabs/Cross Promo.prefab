@@ -265,15 +265,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dbfb732a19c4d9c8279a37c5304446c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ManifestUrl: https://firebasestorage.googleapis.com/v0/b/stencil-services.appspot.com/o/Promo%2Fpromo-manifest-1.json?alt=media
+  ManifestUrl: https://firebasestorage.googleapis.com/v0/b/stencil-services.appspot.com/o/Promo%2Fstencilcrosspromo?alt=media
   Size: 0
   Tag: {fileID: 114349966941154210}
   Render: {fileID: 114118148203666556}
   Content: {fileID: 1031464270045688}
   New: {fileID: 1413309054243694}
-  SupportedGenres:
-  - {fileID: 11400000, guid: 46cccd70b575c43e8bfd38a18376d1be, type: 2}
-  - {fileID: 11400000, guid: 380d1114a763f473fb40a61619708ead, type: 2}
   OnAdStart:
     m_PersistentCalls:
       m_Calls:
@@ -626,7 +623,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 248.09998}
+  m_AnchoredPosition: {x: 0, y: 248.09961}
   m_SizeDelta: {x: 0, y: 496.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224693523255902930
@@ -644,7 +641,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -111.00018}
+  m_AnchoredPosition: {x: 0, y: -111}
   m_SizeDelta: {x: 379, y: 153}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!224 &224916264656785280

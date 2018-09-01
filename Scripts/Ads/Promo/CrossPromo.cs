@@ -1,16 +1,14 @@
-using System;
 using System.Collections;
-using System.Linq;
-using System.Text;
+using Ads.Promo.Data;
 using Analytics;
 using Binding;
-using Dev;
-using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityEngine.Video;
 using Util;
+using Random = UnityEngine.Random;
 
 namespace Ads.Promo
 {
@@ -22,68 +20,60 @@ namespace Ads.Promo
             get { return PlayerPrefs.GetInt("x-promo-last-index", -1); }
             set { PlayerPrefs.SetInt("x-promo-last-index", value); }
         }
-
-        [CanBeNull]
-        public static string CachedManifest
-        {
-            get { return PlayerPrefs.GetString("x-promo-manifest", null); }
-            set { PlayerPrefs.SetString("x-promo-manifest", value); }
-        }
-
-        public static DateTime? CacheDate
-        {
-            get { return PlayerPrefsX.GetDateTime("x-promo-manifest-date"); }
-            set { PlayerPrefsX.SetDateTime("x-promo-manifest-date", value); }
-        }
-
-        public string ManifestUrl;
+        
+        public string MetadataUrl;
+        
         public VideoSize Size = VideoSize.Video480;
+        public bool SkipCaching;
 
         public Image Tag;
         public RawImage Render;
         public GameObject Content;
         public GameObject New;
 
-        public CrossPromoGenre[] SupportedGenres;
-
         public UnityEvent OnAdStart;
         public UnityEvent OnAdFinish;
         public UnityEvent OnAdFail;
-        
-        [Header("Manifest")]
-        public int HoursExpiration = 24;
-        [TextArea]
-        public string DebugManifest; 
-        public float DebugLoadTime = 0.5f;
-        
+       
         [Bind]
         public VideoPlayer Player { get; private set; }
 
-        private Promo _promo => _manifest.promos[_index];
-        private PromoManifest _manifest;
+        public PromoManifest Manifest;
+        public PromoAsset Promo;// => _manifest?.Promos[_index];
+        
+        private PromoMetadata _meta;
+
         private int _index = -1;
         private bool _failed;
         private bool _clicked;
         private bool _started;
+        private bool _destroyed;
+
+        private static bool CanContinue(CrossPromo promo)
+        {
+            return promo != null && !promo._destroyed && !promo._failed;
+        }
 
         public void OnClick()
         {
             _clicked = true;
-            Tracking.Instance.Track($"promo_click_{_promo.id}", "from", Application.identifier);
-            Tracking.Instance.SetUserProperty($"promo_clicked_{_promo.id}", true);
-            var url = _promo.downloads.GetPlatformUrl();
+            Tracking.Instance.Track($"promo_click_{Promo.id}", "from", Application.identifier);
+            Tracking.Instance.SetUserProperty($"promo_clicked_{Promo.id}", true);
+            var url = Promo.downloads.GetPlatformUrl();
             Debug.Log($"Open {url}");
             Application.OpenURL(url);
         }
 
         private void OnApplicationFocus(bool hasFocus)
         {
-            // TODO.
+            if (hasFocus)
+                OnAdFinish?.Invoke();
         }
 
         private void Awake()
         {
             this.Bind();
+            Caching.compressionEnabled = false;
             Player.prepareCompleted += OnPrepare;
             Player.errorReceived += OnError;
             Player.loopPointReached += OnLoop;
@@ -94,119 +84,67 @@ namespace Ads.Promo
 
         private IEnumerator Start()
         {
-            yield return StartCoroutine(LoadManifest());
-            if (_failed) yield break;
-            if (_manifest == null)
-            {
-                Fail();
-                yield break;
-            }
-
+            yield return Objects.StartCoroutine(LoadManifest());
+            if (!CanContinue(this)) yield break;
+            
             int? start = null;
             bool repeat; 
             
             _index = LastPromoIndex;
             do
             {
-                _index = (_index + 1) % _manifest.promos.Length;
+                _index = (_index + 1) % Manifest.Promos.Length;
                 repeat = _index == start;
                 start = start ?? _index;
             } while (!CanUsePromo() && !repeat);
+            Promo = Manifest.Promos[_index];
 
-            var genre = GetGenre();
+            var genre = Promo?.genre;
             Tag.gameObject.SetActive(genre != null);
             Tag.sprite = genre?.Tag;
             
             LastPromoIndex = _index;
-            var video = _promo.videos.GetForSize(Size);
-            Debug.Log($"Moving forward with promo {_promo.id} -> {video}");
-            Player.url = video;
+            var video = Promo.videos.GetForSize(Size);
+            Debug.Log($"Moving forward with promo {Promo.id} -> {video}");
+            Player.clip = video;
             var res = Size.GetResolution();
             Player.targetTexture = new RenderTexture(res.x, res.y, 24);
             Render.texture = Player.targetTexture;
-            New.SetActive(_promo.isNew);
             Player.Play();
             PlayerPrefs.Save();
         }
 
+        private void OnDestroy()
+        {
+            _destroyed = true;
+        }
+
         private bool CanUsePromo()
         {
-            if (_promo.id == Application.identifier) return false;
-            if (!_promo.enabled) return false;
+            if (Manifest.Promos[_index].id == Application.identifier) return false;
 //            if (GetPromoType() == null) return false;
             return true;
         }
 
-        private CrossPromoGenre GetGenre()
-        {
-            return SupportedGenres.FirstOrDefault(genre => genre.Id == _promo.genre);
-        }
-
         private IEnumerator LoadManifest()
         {
-            if (Developers.Enabled && !string.IsNullOrEmpty(DebugManifest))
+            yield return GetMetadata();
+            if (!CanContinue(this))
+                yield break;
+
+            var url = _meta.downloads.GetBasePlatformUrl();
+            Debug.Log($"Fetching from {url} [useCache = {!SkipCaching}]");
+            var request = UnityWebRequestAssetBundle.GetAssetBundle(url, (uint) _meta.version, 0);
+            yield return request.SendWebRequest();
+            if (request.isNetworkError || request.isHttpError)
             {
-                Debug.Log($"Loading debug manifest after {DebugLoadTime}");
-                yield return new WaitForSeconds(DebugLoadTime);
-                _manifest = Get(DebugManifest);
+                Debug.LogError($"Could not load manifest: {request.error}");
+                Fail();
                 yield break;
             }
 
-            // Cache invalidation.
-            var cached = CachedManifest;
-            if (!string.IsNullOrEmpty(cached))
-            {
-                var expire = CacheDate + TimeSpan.FromHours(HoursExpiration);
-                if (expire < DateTime.UtcNow)
-                    cached = null;
-            }
-            
-            if (!string.IsNullOrEmpty(cached))
-            {
-                Debug.Log($"Found cached manifest.");
-                _manifest = Get(cached);
-            } else using (var www = new WWW(ManifestUrl))
-            {
-                Debug.Log($"Loading manifest from {ManifestUrl}");
-                yield return www;
-                if (!string.IsNullOrEmpty(www.error))
-                {
-                    Fail();
-                    yield break;
-                }
-                
-                Debug.Log($"Found manifest!");
-                var str = Encoding.UTF8.GetString(www.bytes);
-                _manifest = Get(str);
-                if (_manifest != null)
-                {
-                    CachedManifest = str;
-                    CacheDate = DateTime.UtcNow;   
-                }
-            }
-
-            if (_manifest == null)
-            {
-                Debug.LogError("Could not load manifest!");
-                Fail();
-            }
-            else
-            {
-                Debug.Log($"Loaded manifest with {_manifest.promos.Length} entries.");
-            }
-        }
-
-        private static PromoManifest Get(string json)
-        {
-            try
-            {
-                return JsonUtility.FromJson<PromoManifest>(json);
-            }
-            catch (Exception e)
-            {
-                Debug.LogException(e);
-                return null;
-            }
+            var bundle = DownloadHandlerAssetBundle.GetContent(request);
+            Manifest = bundle.LoadAsset<PromoManifest>("Manifest");
         }
 
         private void OnPrepare(VideoPlayer source)
@@ -227,7 +165,7 @@ namespace Ads.Promo
 
         private void Fail()
         {
-            if (_failed) return;
+            if (this == null || _destroyed || _failed) return;
             _failed = true;
             OnAdFail?.Invoke();
         }
@@ -235,6 +173,23 @@ namespace Ads.Promo
         private void OnError(VideoPlayer source, string message)
         {
             Fail();
+        }
+
+        private IEnumerator GetMetadata()
+        {
+            var req = UnityWebRequest.Get(MetadataUrl);
+            yield return req.SendWebRequest();
+            if (!string.IsNullOrEmpty(req.error))
+            {
+                Fail();
+                yield break;
+            }
+
+            var json = req.downloadHandler.text;
+            Debug.Log($"Received metadata: {json}");
+            _meta = JsonUtility.FromJson<PromoMetadata>(json);
+            if (SkipCaching)
+                _meta.version = Random.Range(0, int.MaxValue);
         }
     }
 }

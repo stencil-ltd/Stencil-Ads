@@ -1,8 +1,8 @@
 using UnityEngine;
 
-namespace Ads.Promo
+namespace Ads.Promo.Data
 {
-    [CreateAssetMenu(menuName = "Stencil/Cross Promo")]
+    [CreateAssetMenu(menuName = "Stencil/Promo Genre")]
     public class CrossPromoGenre : ScriptableObject
     {
         public string Id;

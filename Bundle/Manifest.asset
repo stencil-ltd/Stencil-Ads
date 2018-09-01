@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5bbdfeb0c614f72b6fceda56823f637, type: 3}
+  m_Name: Manifest
+  m_EditorClassIdentifier: 
+  Promos:
+  - {fileID: 11400000, guid: d6b208bcb714a4dc4b8abc1c60d2db8e, type: 2}
+  - {fileID: 11400000, guid: b87916e637d67472ba88a05b01a68f77, type: 2}
+  - {fileID: 11400000, guid: 39112ec1e83cc4a37a5c6fc25711ba58, type: 2}
+  - {fileID: 11400000, guid: fbe55556638b54235ac3587978a63877, type: 2}
