@@ -311,31 +311,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  DebugManifest: "{\n    \"promos\": [\n        {\n            \"name\": \"That Word
-    Game - Match 3\",\n            \"id\": \"ltd.stencil.wordpop\",\n            \"enabled\":
-    false,\n            \"genre\": \"Indie\",\n            \"isNew\": true,\n            \"videos\":
-    {\n                \"video480\": \"https://firebasestorage.googleapis.com/v0/b/stencil-services.appspot.com/o/Promo%2FThatWordGame%2Fxpromo_480.mp4?alt=media\"\n
-    \           },\n            \"downloads\": {\n                \"iphone\": \"https://itunes.apple.com/us/app/that-word-game-match-3/id1382313007\",\n
-    \               \"android\": \"https://play.google.com/store/apps/details?id=ltd.stencil.wordpop\"\n
-    \           }\n        },\n        {\n            \"name\": \"BOUNCEFRANDS\",\n
-    \           \"id\": \"ltd.stencil.bouncefrands\",\n            \"enabled\": true,\n
-    \           \"genre\": \"Arcade\",\n            \"isNew\": true,\n            \"videos\":
-    {\n                \"video480\": \"https://firebasestorage.googleapis.com/v0/b/stencil-services.appspot.com/o/Promo%2FBouncefrands%2FBouncefrands_480.mp4?alt=media\"\n
-    \           },\n            \"downloads\": {\n                \"iphone\": \"https://itunes.apple.com/us/app/bouncefrands/id1434141467\",\n
-    \               \"android\": \"https://play.google.com/store/apps/details?id=ltd.stencil.bouncefrands\"\n
-    \           }\n        },\n        {\n            \"name\": \"Rocket MOTO\",\n
-    \           \"id\": \"ltd.stencil.moto\",\n            \"enabled\": true,\n            \"genre\":
-    \"Arcade\",\n            \"isNew\": true,\n            \"videos\": {\n                \"video480\":
-    \"https://firebasestorage.googleapis.com/v0/b/stencil-services.appspot.com/o/Promo%2FRocketMoto%2FRocketMoto_480.mp4?alt=media\"\n
-    \           },\n            \"downloads\": {\n                \"iphone\": \"https://itunes.apple.com/us/app/rocket-moto/id1420714809\",\n
-    \               \"android\": \"https://play.google.com/store/apps/details?id=ltd.stencil.moto\"\n
-    \           }\n        },\n        {\n            \"name\": \"Do a Backflip!\",\n
-    \           \"id\": \"ltd.stencil.backflip\",\n            \"enabled\": true,\n
-    \           \"genre\": \"Indie\",\n            \"isNew\": true,\n            \"videos\":
-    {\n                \"video480\": \"https://firebasestorage.googleapis.com/v0/b/stencil-services.appspot.com/o/Promo%2FBackflip%2FBackflip_480.mp4?alt=media\"\n
-    \           },\n            \"downloads\": {\n                \"iphone\": \"https://itunes.apple.com/us/app/do-a-backflip/id1413862752\",\n
-    \               \"android\": \"https://play.google.com/store/apps/details?id=ltd.stencil.backflip\"\n
-    \           }\n        }\n    ]\n}\t"
+  DebugManifest: 
   ManifestLoadTime: 0.5
 --- !u!114 &114565734522503836
 MonoBehaviour:

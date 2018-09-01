@@ -5,6 +5,7 @@ using System.Text;
 using Analytics;
 using Binding;
 using Dev;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -22,6 +23,17 @@ namespace Ads.Promo
             set
             {
                 PlayerPrefs.SetInt("x-promo-last-index", value);
+                PlayerPrefs.Save();
+            }
+        }
+
+        [CanBeNull]
+        public static string CachedManifest
+        {
+            get { return PlayerPrefs.GetString("x-promo-manifest"); }
+            set
+            {
+                PlayerPrefs.SetString("x-promo-manifest", value);
                 PlayerPrefs.Save();
             }
         }
@@ -137,8 +149,18 @@ namespace Ads.Promo
                 Debug.Log($"Loading debug manifest after {ManifestLoadTime}");
                 yield return new WaitForSeconds(ManifestLoadTime);
                 _manifest = Get(DebugManifest);
+                yield break;
             }
-            else using (var www = WWW.LoadFromCacheOrDownload(ManifestUrl, 0))
+
+            var cached = CachedManifest;
+            if (cached != null)
+            {
+                Debug.Log($"Found cached manifest.");
+                _manifest = Get(cached);
+                yield break;
+            }
+
+            using (var www = WWW.LoadFromCacheOrDownload(ManifestUrl, 0))
             {
                 Debug.Log($"Loading manifest from {ManifestUrl}");
                 yield return www;
@@ -151,6 +173,7 @@ namespace Ads.Promo
                 Debug.Log($"Found manifest!");
                 var str = Encoding.UTF8.GetString(www.bytes);
                 _manifest = Get(str);
+                CachedManifest = str;
             }
 
             if (_manifest == null)
