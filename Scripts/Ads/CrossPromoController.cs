@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Ads.Promo;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Util;
@@ -8,8 +9,7 @@ namespace Ads
 {
     public class CrossPromoController : MonoBehaviour
     {
-        public float LoadTime = 2f;
-        public AdSettings Settings; // prevent build-time culling.
+        public NextSceneLoader Loader;
         private AsyncOperation _scene;
 
         private void Awake()
@@ -17,47 +17,21 @@ namespace Ads
             StencilAds.InitHouse();
             StencilAds.House.OnError += OnError;
             StencilAds.House.OnComplete += OnComplete;
+            StencilAds.House.OnLoaded += OnReady;
             new GameObject("Main Thread").AddComponent<UnityMainThreadDispatcher>();
         }
 
-        private IEnumerator Start()
+        private void OnReady(object sender, EventArgs e)
         {
-            yield return null;
-            _scene = SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
-            _scene.allowSceneActivation = false;
-        
-            yield return new WaitForSeconds(LoadTime);
-            if (StencilAds.House.IsReady)
-            {
-                Debug.Log("Found House Ad. Showing.");
-                StencilAds.House.Show();
-            }
-            else
-            {
-                Debug.Log("No House Ads. Moving On.");
-                Continue();
-            }
+            Loader.Pause();
+            StencilAds.House.Show();
         }
 
         private void OnDestroy()
         {
             StencilAds.House.OnError -= OnError;
             StencilAds.House.OnComplete -= OnComplete;
-        }
-
-        private void Continue()
-        {
-            _scene.allowSceneActivation = true;
-            if (_scene.isDone)
-                StartCoroutine(GameReady());
-            else
-                _scene.completed += operation => StartCoroutine(GameReady());
-        }
-
-        private IEnumerator GameReady()
-        {
-            yield return null;
-            SceneManager.UnloadSceneAsync(0);
+            StencilAds.House.OnLoaded -= OnReady;
         }
 
         private void OnComplete(object sender, EventArgs e)
@@ -70,6 +44,11 @@ namespace Ads
         {
             Debug.LogWarning("House Ad Error");
             Continue();
+        }
+
+        private void Continue()
+        {
+            Loader.ForceContinue();
         }
     }
 }
