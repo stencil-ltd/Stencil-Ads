@@ -273,7 +273,7 @@ MonoBehaviour:
   New: {fileID: 1413309054243694}
   SupportedGenres:
   - {fileID: 11400000, guid: 46cccd70b575c43e8bfd38a18376d1be, type: 2}
-  - {fileID: 11400000, guid: 3c91fe6ed52184a5887231657f9194be, type: 2}
+  - {fileID: 11400000, guid: 380d1114a763f473fb40a61619708ead, type: 2}
   OnAdStart:
     m_PersistentCalls:
       m_Calls:
