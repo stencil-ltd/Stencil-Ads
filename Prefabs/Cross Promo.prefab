@@ -265,7 +265,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dbfb732a19c4d9c8279a37c5304446c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ManifestUrl: 
+  ManifestUrl: https://firebasestorage.googleapis.com/v0/b/stencil-services.appspot.com/o/Promo%2Fpromo-manifest-1.json?alt=media
   Size: 0
   Tag: {fileID: 114349966941154210}
   Render: {fileID: 114118148203666556}
@@ -311,8 +311,9 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  HoursExpiration: 24
   DebugManifest: 
-  ManifestLoadTime: 0.5
+  DebugLoadTime: 0.5
 --- !u!114 &114565734522503836
 MonoBehaviour:
   m_ObjectHideFlags: 1

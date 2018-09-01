@@ -20,22 +20,20 @@ namespace Ads.Promo
         public static int LastPromoIndex
         {
             get { return PlayerPrefs.GetInt("x-promo-last-index", -1); }
-            set
-            {
-                PlayerPrefs.SetInt("x-promo-last-index", value);
-                PlayerPrefs.Save();
-            }
+            set { PlayerPrefs.SetInt("x-promo-last-index", value); }
         }
 
         [CanBeNull]
         public static string CachedManifest
         {
-            get { return PlayerPrefs.GetString("x-promo-manifest"); }
-            set
-            {
-                PlayerPrefs.SetString("x-promo-manifest", value);
-                PlayerPrefs.Save();
-            }
+            get { return PlayerPrefs.GetString("x-promo-manifest", null); }
+            set { PlayerPrefs.SetString("x-promo-manifest", value); }
+        }
+
+        public static DateTime? CacheDate
+        {
+            get { return PlayerPrefsX.GetDateTime("x-promo-manifest-date"); }
+            set { PlayerPrefsX.SetDateTime("x-promo-manifest-date", value); }
         }
 
         public string ManifestUrl;
@@ -51,11 +49,12 @@ namespace Ads.Promo
         public UnityEvent OnAdStart;
         public UnityEvent OnAdFinish;
         public UnityEvent OnAdFail;
-
-        [Header("Debug")] 
+        
+        [Header("Manifest")]
+        public int HoursExpiration = 24;
         [TextArea]
-        public string DebugManifest;
-        public float ManifestLoadTime = 0.5f;
+        public string DebugManifest; 
+        public float DebugLoadTime = 0.5f;
         
         [Bind]
         public VideoPlayer Player { get; private set; }
@@ -127,6 +126,7 @@ namespace Ads.Promo
             Render.texture = Player.targetTexture;
             New.SetActive(_promo.isNew);
             Player.Play();
+            PlayerPrefs.Save();
         }
 
         private bool CanUsePromo()
@@ -146,25 +146,30 @@ namespace Ads.Promo
         {
             if (Developers.Enabled && !string.IsNullOrEmpty(DebugManifest))
             {
-                Debug.Log($"Loading debug manifest after {ManifestLoadTime}");
-                yield return new WaitForSeconds(ManifestLoadTime);
+                Debug.Log($"Loading debug manifest after {DebugLoadTime}");
+                yield return new WaitForSeconds(DebugLoadTime);
                 _manifest = Get(DebugManifest);
                 yield break;
             }
 
+            // Cache invalidation.
             var cached = CachedManifest;
-            if (cached != null)
+            if (!string.IsNullOrEmpty(cached))
+            {
+                var expire = CacheDate + TimeSpan.FromHours(HoursExpiration);
+                if (expire < DateTime.UtcNow)
+                    cached = null;
+            }
+            
+            if (!string.IsNullOrEmpty(cached))
             {
                 Debug.Log($"Found cached manifest.");
                 _manifest = Get(cached);
-                yield break;
-            }
-
-            using (var www = WWW.LoadFromCacheOrDownload(ManifestUrl, 0))
+            } else using (var www = new WWW(ManifestUrl))
             {
                 Debug.Log($"Loading manifest from {ManifestUrl}");
                 yield return www;
-                if (string.IsNullOrEmpty(www.error))
+                if (!string.IsNullOrEmpty(www.error))
                 {
                     Fail();
                     yield break;
@@ -173,7 +178,11 @@ namespace Ads.Promo
                 Debug.Log($"Found manifest!");
                 var str = Encoding.UTF8.GetString(www.bytes);
                 _manifest = Get(str);
-                CachedManifest = str;
+                if (_manifest != null)
+                {
+                    CachedManifest = str;
+                    CacheDate = DateTime.UtcNow;   
+                }
             }
 
             if (_manifest == null)
