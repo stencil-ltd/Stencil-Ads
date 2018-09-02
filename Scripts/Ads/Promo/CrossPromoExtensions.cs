@@ -29,7 +29,7 @@ namespace Ads.Promo
         {
             var campaign = Application.identifier;
             var referrer = $"utm_source={source}&utm_medium=cross-promo&utm_campaign={campaign}";
-            referrer = Uri.EscapeUriString(referrer);
+            referrer = Uri.EscapeDataString(referrer);
             return $"https://play.google.com/store/apps/details?id={id}&referrer={referrer}";
         }
 

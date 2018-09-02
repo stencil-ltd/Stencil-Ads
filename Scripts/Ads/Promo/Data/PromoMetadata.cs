@@ -13,6 +13,7 @@ namespace Ads.Promo.Data
     [Serializable]
     public class AppStoreMetadata
     {
+        // See https://analytics.itunes.apple.com/#/campaigngenerator
         public string provider;
     }
 }
