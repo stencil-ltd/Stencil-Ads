@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Ads.Promo.Data;
 using Analytics;
@@ -59,7 +60,7 @@ namespace Ads.Promo
             _clicked = true;
             Tracking.Instance.Track($"promo_click_{Promo.id}", "from", Application.identifier);
             Tracking.Instance.SetUserProperty($"promo_clicked_{Promo.id}", true);
-            var url = Promo.downloads.GetPlatformUrl();
+            var url = GetDownloadUrl();
             Debug.Log($"Open {url}");
             Application.OpenURL(url);
         }
@@ -110,7 +111,9 @@ namespace Ads.Promo
             var res = Size.GetResolution();
             Player.targetTexture = new RenderTexture(res.x, res.y, 24);
             Render.texture = Player.targetTexture;
+            New.SetActive(Promo.IsNew());
             Player.Play();
+            Promo.SetSeen();
             PlayerPrefs.Save();
         }
 
@@ -190,6 +193,15 @@ namespace Ads.Promo
             _meta = JsonUtility.FromJson<PromoMetadata>(json);
             if (SkipCaching)
                 _meta.version = Random.Range(0, int.MaxValue);
+        }
+
+        private string GetDownloadUrl()
+        {
+            if (Application.isEditor || Application.platform == RuntimePlatform.Android)
+                return CrossPromoExtensions.AndroidUrl(Promo.id, "stencil-ltd");
+            if (Application.platform == RuntimePlatform.IPhonePlayer)
+                return CrossPromoExtensions.ItunesUrl(""+Promo.AppStore.Id, _meta.appStore.provider);
+            return null;
         }
     }
 }

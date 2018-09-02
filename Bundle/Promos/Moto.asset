@@ -16,7 +16,5 @@ MonoBehaviour:
   genre: {fileID: 11400000, guid: 46cccd70b575c43e8bfd38a18376d1be, type: 2}
   videos:
     video480: {fileID: 32900000, guid: 92441c7c044634abf825399695bd2473, type: 3}
-  downloads:
-    iphone: https://itunes.apple.com/us/app/rocket-moto/id1420714809
-    android: https://play.google.com/store/apps/details?id=ltd.stencil.moto
-    landingPage: 
+  AppStore:
+    Id: 1420714809

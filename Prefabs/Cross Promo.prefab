@@ -265,8 +265,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dbfb732a19c4d9c8279a37c5304446c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ManifestUrl: https://firebasestorage.googleapis.com/v0/b/stencil-services.appspot.com/o/Promo%2Fstencilcrosspromo?alt=media
+  MetadataUrl: https://firebasestorage.googleapis.com/v0/b/stencil-services.appspot.com/o/Promo%2Fpromo-meta-1.json?alt=media
+  AndroidHash: d03f005748590049fb2b41faeda44f90
+  IosHash: 5dfd92d42b8db524722c08fee12852e7
   Size: 0
+  SkipCaching: 1
   Tag: {fileID: 114349966941154210}
   Render: {fileID: 114118148203666556}
   Content: {fileID: 1031464270045688}
@@ -308,9 +311,8 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  HoursExpiration: 24
-  DebugManifest: 
-  DebugLoadTime: 0.5
+  Manifest: {fileID: 0}
+  Promo: {fileID: 0}
 --- !u!114 &114565734522503836
 MonoBehaviour:
   m_ObjectHideFlags: 1

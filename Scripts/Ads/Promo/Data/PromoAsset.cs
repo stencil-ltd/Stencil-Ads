@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Util;
 
 namespace Ads.Promo.Data
 {
@@ -11,6 +12,24 @@ namespace Ads.Promo.Data
         public string name;
         public CrossPromoGenre genre;
         public VideoUrls videos;
-        public DownloadUrls downloads;
+
+        [Tooltip("Check out https://analytics.itunes.apple.com/#/campaigngenerator")]
+        public AppStoreInfo AppStore;
+            
+        public bool IsNew()
+        {
+            return !PlayerPrefsX.GetBool($"promo-seen-{id}");
+        }
+
+        public void SetSeen()
+        {
+            PlayerPrefsX.SetBool($"promo-seen{id}", true);
+        }
+    }
+
+    [Serializable]
+    public class AppStoreInfo
+    {
+        public uint Id;
     }
 }

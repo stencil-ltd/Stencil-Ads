@@ -16,7 +16,5 @@ MonoBehaviour:
   genre: {fileID: 11400000, guid: 380d1114a763f473fb40a61619708ead, type: 2}
   videos:
     video480: {fileID: 32900000, guid: f44b7c108b3e24847b455fd6d09ee775, type: 3}
-  downloads:
-    iphone: https://itunes.apple.com/us/app/that-word-game-match-3/id1382313007
-    android: https://play.google.com/store/apps/details?id=ltd.stencil.wordpop
-    landingPage: 
+  AppStore:
+    Id: 1382313007

@@ -1,3 +1,4 @@
+using System;
 using Ads.Promo.Data;
 using UnityEngine;
 
@@ -14,7 +15,7 @@ namespace Ads.Promo
                     return new Vector2Int(270, 480);
             }
         }
-
+        
         public static string GetBasePlatformUrl(this DownloadUrls urls)
         {
             if (Application.isEditor || Application.platform == RuntimePlatform.Android)
@@ -23,15 +24,19 @@ namespace Ads.Promo
                 return urls.iphone;
             return null;
         }
-
-        public static string GetPlatformUrl(this DownloadUrls urls)
-        {
-            var url = GetBasePlatformUrl(urls);
-            var source = "Stencil";
-            var medium = "CrossPromo";
-            var campaign = Application.identifier;
-            return $"{url}?utm_source={source}&utm_medium={medium}&utm_campaign={campaign}";
-        }
         
+        public static string AndroidUrl(string id, string source)
+        {
+            var campaign = Application.identifier;
+            var referrer = $"utm_source={source}&utm_medium=cross-promo&utm_campaign={campaign}";
+            referrer = Uri.EscapeUriString(referrer);
+            return $"https://play.google.com/store/apps/details?id={id}&referrer={referrer}";
+        }
+
+        public static string ItunesUrl(string id, string provider)
+        {
+            var campaign = Application.identifier;
+            return $"https://itunes.apple.com/app/apple-store/id{id}?pt={provider}&ct={campaign}&mt=8";
+        }
     }
 }

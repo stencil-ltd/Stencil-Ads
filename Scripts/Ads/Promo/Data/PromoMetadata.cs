@@ -7,5 +7,12 @@ namespace Ads.Promo.Data
     {
         public int version;
         public DownloadUrls downloads;
+        public AppStoreMetadata appStore;
+    }
+
+    [Serializable]
+    public class AppStoreMetadata
+    {
+        public string provider;
     }
 }
