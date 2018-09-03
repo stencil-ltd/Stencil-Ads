@@ -100,6 +100,7 @@ namespace Ads.Promo
             Content.SetActive(false);
             Outro.gameObject.SetActive(false);
             Exit.onClick.AddListener(DoExit);
+            new GameObject("Main Thread").AddComponent<UnityMainThreadDispatcher>();
         }
 
         private IEnumerator Start()
