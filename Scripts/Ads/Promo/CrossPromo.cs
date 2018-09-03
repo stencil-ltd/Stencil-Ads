@@ -62,8 +62,14 @@ namespace Ads.Promo
         private bool _destroyed;
         private bool _finished;
 
-        private static bool CanContinue(CrossPromo promo)
+        private bool CanContinue(CrossPromo promo)
         {
+            if (!HasLaunched && SkipOnFirstLaunch)
+            {
+                HasLaunched = true;
+                return false;
+            }
+            HasLaunched = true;
             return promo != null && !promo._destroyed && !promo._failed;
         }
 
@@ -89,10 +95,6 @@ namespace Ads.Promo
             Outro.gameObject.SetActive(false);
             Exit.onClick.AddListener(() => OnAdExit?.Invoke());
             new GameObject("Main Thread").AddComponent<UnityMainThreadDispatcher>();
-
-            if (!HasLaunched && SkipOnFirstLaunch)
-                enabled = false;
-            HasLaunched = true;
         }
 
         private IEnumerator Start()

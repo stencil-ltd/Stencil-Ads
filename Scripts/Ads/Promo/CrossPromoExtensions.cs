@@ -18,6 +18,7 @@ namespace Ads.Promo
         
         public static string GetBasePlatformUrl(this DownloadUrls urls)
         {
+            Debug.Log($"Looking up platform url for {Application.platform}...");
             if (Application.isEditor || Application.platform == RuntimePlatform.Android)
                 return urls.android;
             if (Application.platform == RuntimePlatform.IPhonePlayer)
