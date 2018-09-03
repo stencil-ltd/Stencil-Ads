@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CreateAssetBundles
 {
-    [MenuItem("Assets/Build AssetBundles")]
+    [MenuItem("Stencil/Build Asset Bundles")]
     static void BuildAllAssetBundles()
     {
         const string dir = "AssetBundles";
