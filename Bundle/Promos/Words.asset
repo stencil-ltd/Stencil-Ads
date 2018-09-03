@@ -16,6 +16,6 @@ MonoBehaviour:
   genre: {fileID: 11400000, guid: ee1ee47ecd2404191b18e110d1f8899e, type: 2}
   videos:
     video480: {fileID: 32900000, guid: f44b7c108b3e24847b455fd6d09ee775, type: 3}
-  outro: {fileID: 21300000, guid: 62af42a6ecebe4893a1a3752b303120e, type: 3}
+  outro: {fileID: 0}
   AppStore:
     Id: 1382313007
