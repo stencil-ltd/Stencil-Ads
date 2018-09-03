@@ -75,7 +75,7 @@ namespace Ads.Promo
 
         public void OnClick()
         {
-            Objects.StartCoroutine(_OnClick());
+            StartCoroutine(_OnClick());
         }
 
         private IEnumerator _OnClick()
@@ -100,14 +100,13 @@ namespace Ads.Promo
             Content.SetActive(false);
             Outro.gameObject.SetActive(false);
             Exit.onClick.AddListener(DoExit);
-            new GameObject("Main Thread").AddComponent<UnityMainThreadDispatcher>();
         }
 
         private IEnumerator Start()
         {
             if (!Developers.Enabled || Promo == null)
             {
-                yield return Objects.StartCoroutine(LoadManifest());
+                yield return StartCoroutine(LoadManifest());
                 if (Manifest == null) yield break;
                 if (!CanContinue(this)) yield break;
                 if (!SelectPromo()) yield break;
