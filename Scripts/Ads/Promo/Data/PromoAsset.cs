@@ -11,7 +11,8 @@ namespace Ads.Promo.Data
         public string id;
         public string name;
         public CrossPromoGenre genre;
-        public VideoUrls videos;
+        public Videos videos;
+        public Sprite outro;
 
         [Tooltip("Check out https://analytics.itunes.apple.com/#/campaigngenerator")]
         public AppStoreInfo AppStore;

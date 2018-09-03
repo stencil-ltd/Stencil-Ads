@@ -3,6 +3,7 @@ using System.Collections;
 using Ads.Promo.Data;
 using Analytics;
 using Binding;
+using Dev;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
@@ -21,24 +22,34 @@ namespace Ads.Promo
             get { return PlayerPrefs.GetInt("x-promo-last-index", -1); }
             set { PlayerPrefs.SetInt("x-promo-last-index", value); }
         }
+
+        public static bool HasLaunched
+        {
+            get { return PlayerPrefsX.GetBool("x-promo-seen"); }
+            set { PlayerPrefsX.SetBool("x-promo-seen", value);}
+        }
         
         public string MetadataUrl;
         
         public VideoSize Size = VideoSize.Video480;
         public bool SkipCaching;
+        public bool SkipOnFirstLaunch = true;
 
         public Image Tag;
         public RawImage Render;
+        public Image Outro;
         public GameObject Content;
         public GameObject New;
+        public Button Exit;
 
         public UnityEvent OnAdStart;
-        public UnityEvent OnAdFinish;
         public UnityEvent OnAdFail;
+        public UnityEvent OnAdExit;
        
         [Bind]
         public VideoPlayer Player { get; private set; }
 
+        [Header("Debug Info")]
         public PromoManifest Manifest;
         public PromoAsset Promo;// => _manifest?.Promos[_index];
         
@@ -49,6 +60,7 @@ namespace Ads.Promo
         private bool _clicked;
         private bool _started;
         private bool _destroyed;
+        private bool _finished;
 
         private static bool CanContinue(CrossPromo promo)
         {
@@ -65,12 +77,6 @@ namespace Ads.Promo
             Application.OpenURL(url);
         }
 
-        private void OnApplicationFocus(bool hasFocus)
-        {
-            if (hasFocus)
-                OnAdFinish?.Invoke();
-        }
-
         private void Awake()
         {
             this.Bind();
@@ -80,25 +86,23 @@ namespace Ads.Promo
             Player.loopPointReached += OnLoop;
             Player.playOnAwake = false;
             Content.SetActive(false);
+            Outro.gameObject.SetActive(false);
+            Exit.onClick.AddListener(() => OnAdExit?.Invoke());
             new GameObject("Main Thread").AddComponent<UnityMainThreadDispatcher>();
+
+            if (!HasLaunched && SkipOnFirstLaunch)
+                enabled = false;
+            HasLaunched = true;
         }
 
         private IEnumerator Start()
         {
-            yield return Objects.StartCoroutine(LoadManifest());
-            if (!CanContinue(this)) yield break;
-            
-            int? start = null;
-            bool repeat; 
-            
-            _index = LastPromoIndex;
-            do
+            if (!Developers.Enabled || Promo == null)
             {
-                _index = (_index + 1) % Manifest.Promos.Length;
-                repeat = _index == start;
-                start = start ?? _index;
-            } while (!CanUsePromo() && !repeat);
-            Promo = Manifest.Promos[_index];
+                yield return Objects.StartCoroutine(LoadManifest());
+                if (!CanContinue(this)) yield break;
+                SelectPromo();
+            }
 
             var genre = Promo?.genre;
             Tag.gameObject.SetActive(genre != null);
@@ -117,9 +121,31 @@ namespace Ads.Promo
             PlayerPrefs.Save();
         }
 
+        private void SelectPromo()
+        {
+            int? start = null;
+            bool repeat;
+
+            _index = LastPromoIndex;
+            do
+            {
+                _index = (_index + 1) % Manifest.Promos.Length;
+                repeat = _index == start;
+                start = start ?? _index;
+            } while (!CanUsePromo() && !repeat);
+
+            Promo = Manifest.Promos[_index];
+        }
+
         private void OnDestroy()
         {
             _destroyed = true;
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (hasFocus && _clicked)
+                OnAdExit?.Invoke();
         }
 
         private bool CanUsePromo()
@@ -163,7 +189,14 @@ namespace Ads.Promo
         private void OnLoop(VideoPlayer source)
         {
             Debug.LogWarning("Finished.");
-            OnAdFinish?.Invoke();
+            _finished = true;
+            Outro.sprite = Promo.outro;
+            Outro.gameObject.SetActive(true);
+            var c = Outro.color;
+            c.a = 0f;
+            Outro.color = c;
+            LeanTween.alpha(Render.GetComponent<RectTransform>(), 0f, 0.5f);
+            LeanTween.alpha(Outro.GetComponent<RectTransform>(), 1f, 0.5f);
         }
 
         private void Fail()
@@ -191,7 +224,7 @@ namespace Ads.Promo
             var json = req.downloadHandler.text;
             Debug.Log($"Received metadata: {json}");
             _meta = JsonUtility.FromJson<PromoMetadata>(json);
-            if (SkipCaching)
+            if (Developers.Enabled && SkipCaching)
                 _meta.version = Random.Range(0, int.MaxValue);
         }
 
