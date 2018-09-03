@@ -7,7 +7,6 @@ namespace Ads
     {
         Banner,
         Interstitial,
-        Rewarded,
-        House
+        Rewarded
     }
 }

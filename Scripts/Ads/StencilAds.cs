@@ -13,9 +13,7 @@ namespace Ads
         private static AdConfiguration _banner => AdSettings.Instance.BannerConfiguration;
         private static AdConfiguration _interstitial => AdSettings.Instance.InterstitialConfiguration;
         private static AdConfiguration _rewarded => AdSettings.Instance.RewardConfiguration;
-        private static AdConfiguration _house => AdSettings.Instance.HouseConfiguration;
 
-        public static VideoAd House { get; private set; }
         public static VideoAd Interstitial { get; private set; }
         public static VideoAd Rewarded { get; private set; }
 
@@ -25,14 +23,6 @@ namespace Ads
             CheckReload();   
         }
         
-        public static void InitHouse()
-        {
-#if STENCIL_ADMOB
-        House = new AdmobInterstitial(_house);
-        House.Init();
-#endif
-        }
-
         private static bool _init;
         public static void Init()
         {
@@ -65,8 +55,6 @@ namespace Ads
                     return Interstitial;
                 case AdType.Rewarded:
                     return Rewarded;
-                case AdType.House:
-                    return House;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
