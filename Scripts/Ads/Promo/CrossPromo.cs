@@ -75,12 +75,18 @@ namespace Ads.Promo
 
         public void OnClick()
         {
+            Objects.StartCoroutine(_OnClick());
+        }
+
+        private IEnumerator _OnClick()
+        {
             _clicked = true;
-            Tracking.Instance.Track($"promo_click_{Promo.id}", "from", Application.identifier);
-            Tracking.Instance.SetUserProperty($"promo_clicked_{Promo.id}", true);
+            Promo.LastClick = DateTime.UtcNow;
             var url = GetDownloadUrl();
             Debug.Log($"Open {url}");
             Application.OpenURL(url);
+            yield return null;
+            DoExit();
         }
 
         private void Awake()
@@ -93,7 +99,7 @@ namespace Ads.Promo
             Player.playOnAwake = false;
             Content.SetActive(false);
             Outro.gameObject.SetActive(false);
-            Exit.onClick.AddListener(() => OnAdExit?.Invoke());
+            Exit.onClick.AddListener(DoExit);
             new GameObject("Main Thread").AddComponent<UnityMainThreadDispatcher>();
         }
 
@@ -102,8 +108,9 @@ namespace Ads.Promo
             if (!Developers.Enabled || Promo == null)
             {
                 yield return Objects.StartCoroutine(LoadManifest());
+                if (Manifest == null) yield break;
                 if (!CanContinue(this)) yield break;
-                SelectPromo();
+                if (!SelectPromo()) yield break;
             }
 
             var genre = Promo?.genre;
@@ -113,30 +120,33 @@ namespace Ads.Promo
             LastPromoIndex = _index;
             var video = Promo.videos.GetForSize(Size);
             Debug.Log($"Moving forward with promo {Promo.id} -> {video}");
+            Player.isLooping = Promo.outro == null;
             Player.clip = video;
             var res = Size.GetResolution();
             Player.targetTexture = new RenderTexture(res.x, res.y, 24);
             Render.texture = Player.targetTexture;
-            New.SetActive(Promo.IsNew());
+            New.SetActive(!Promo.HasSeen);
             Player.Play();
-            Promo.SetSeen();
+            Promo.HasSeen = true;
             PlayerPrefs.Save();
         }
 
-        private void SelectPromo()
+        private bool SelectPromo()
         {
-            int? start = null;
-            bool repeat;
-
+            var count = 0;
+            bool canUse;
             _index = LastPromoIndex;
             do
             {
                 _index = (_index + 1) % Manifest.Promos.Length;
-                repeat = _index == start;
-                start = start ?? _index;
-            } while (!CanUsePromo() && !repeat);
+                canUse = CanUsePromo();
+                ++count;
+            } while (!canUse && count < Manifest.Promos.Length);
 
+            if (!canUse)
+                return false;
             Promo = Manifest.Promos[_index];
+            return true;
         }
 
         private void OnDestroy()
@@ -144,16 +154,16 @@ namespace Ads.Promo
             _destroyed = true;
         }
 
-        private void OnApplicationFocus(bool hasFocus)
+        private void DoExit()
         {
-            if (hasFocus && _clicked)
-                OnAdExit?.Invoke();
+            PlayerPrefs.Save();
+            OnAdExit?.Invoke();
         }
 
         private bool CanUsePromo()
         {
             if (Manifest.Promos[_index].id == Application.identifier) return false;
-//            if (GetPromoType() == null) return false;
+            if (Manifest.Promos[_index].LastClick != null) return false;
             return true;
         }
 
@@ -192,6 +202,9 @@ namespace Ads.Promo
         {
             Debug.LogWarning("Finished.");
             _finished = true;
+            if (Promo.outro == null)
+                return;
+            
             Outro.sprite = Promo.outro;
             Outro.gameObject.SetActive(true);
             var c = Outro.color;
@@ -212,7 +225,7 @@ namespace Ads.Promo
         {
             Fail();
         }
-
+        
         private IEnumerator GetMetadata()
         {
             var req = UnityWebRequest.Get(MetadataUrl);
