@@ -1,6 +1,7 @@
 #if STENCIL_ADMOB
 
 using System;
+using Ads.Ui;
 using GoogleMobileAds.Api;
 using Plugins.UI;
 using UI;
@@ -12,7 +13,7 @@ using Util;
 
 namespace Ads.Admob
 {    
-    public class AdmobBannerArea : MonoBehaviour
+    public class AdmobBannerArea : Controller<AdmobBannerArea>
     {            
         public static BannerEvent OnChange;
 
@@ -25,8 +26,6 @@ namespace Ads.Admob
 
         public RectTransform Content => Frame.Instance.Contents;
         public RectTransform Scrim => Frame.Instance.Scrim;
-        
-        public static AdmobBannerArea Instance { get; private set; }
         
         public static float BannerHeight
         {
@@ -42,7 +41,7 @@ namespace Ads.Admob
         
         public static void ShowBanner()
         {
-            if (_visible || _banner == null) return;
+            if (_visible || _banner == null || StencilPremium.HasPremium) return;
             Debug.Log("Show Banner");
             _visible = true;
             _banner.Show();
@@ -58,17 +57,20 @@ namespace Ads.Admob
             Change();
         }
 
-        private void Awake()
+        public override void DidRegister()
         {
-            Instance = this;
+            base.DidRegister();
+            StencilPremium.OnPremiumPurchased += OnPurchase;
         }
 
-        private void OnDestroy()
+        public override void WillUnregister()
         {
-            Instance = Instance == this ? null : Instance;
+            base.WillUnregister();
+            StencilPremium.OnPremiumPurchased -= OnPurchase;
         }
 
         private static bool _init;
+
         private void Start()
         {            
             if (!_init)
@@ -82,7 +84,9 @@ namespace Ads.Admob
                 _banner.LoadAd(new AdRequest.Builder().Build());
                 _banner.OnAdFailedToLoad += (sender, args) => _bannerFailed = true;
                 
-                ShowBanner();
+                if (!StencilPremium.HasPremium)
+                    ShowBanner();
+                else HideBanner();
             }
 
             if (_bannerFailed)
@@ -93,7 +97,12 @@ namespace Ads.Admob
             
             Change();
         }
-        
+
+        private void OnPurchase(object sender, EventArgs e)
+        {
+            HideBanner();
+        }
+
         private static void Change()
         {
             Instance?.SetBannerSize(BannerHeight);

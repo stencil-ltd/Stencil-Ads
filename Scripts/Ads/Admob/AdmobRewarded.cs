@@ -14,6 +14,7 @@ namespace Ads.Admob
 
         public override bool SupportsEditor => false;
         public override bool IsReady => _ad?.IsLoaded() ?? false;
+        public override bool ShowInPremium => true;
         protected override void ShowInternal() => _ad.Show();
 
         public override void Init()

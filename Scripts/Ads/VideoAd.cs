@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Ads.Ui;
 using Analytics;
 using UnityEngine;
 using Util;
@@ -40,14 +41,22 @@ namespace Ads
         {
             if (Application.isEditor && !SupportsEditor)
             {
-                Objects.StartCoroutine(FakeShow());
+                Objects.StartCoroutine(FakeShow(true));
                 return;
             }
+
+            if (StencilPremium.HasPremium && !ShowInPremium)
+            {
+                Objects.StartCoroutine(FakeShow(false));
+                return;
+            }
+            
             ShowInternal();
         }
 
         public virtual bool SupportsEditor => true;
         public abstract bool IsReady { get; }
+        public abstract bool ShowInPremium { get; }
 
         protected abstract void ShowInternal();
         protected abstract void LoadInternal();
@@ -97,10 +106,11 @@ namespace Ads
             yield return null;
         }
 
-        private IEnumerator FakeShow()
+        private IEnumerator FakeShow(bool delay)
         {
             Debug.LogWarning("Ad doesn't support editor. Completing!");
-            yield return new WaitForSeconds(0.3f);
+            if (delay)
+                yield return new WaitForSeconds(0.3f);
             NotifyComplete();
         }
 
