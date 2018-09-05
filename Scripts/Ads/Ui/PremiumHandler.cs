@@ -19,9 +19,8 @@ namespace Ads.Ui
 
         private Product _product;
 
-        protected override void Awake()
+        private void Start()
         {
-            base.Awake();
             this.Bind();
             Button.gameObject.SetActive(false);      
             _listener.onPurchaseComplete.AddListener(OnProduct);
