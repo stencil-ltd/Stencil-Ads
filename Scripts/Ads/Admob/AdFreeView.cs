@@ -5,7 +5,7 @@ namespace Ads.Admob
 {
     public class AdFreeView : MonoBehaviour
     {
-        public static int Count { get; private set; }
+        public static int Count { get; private set; } 
 
         private void OnEnable()
         {
