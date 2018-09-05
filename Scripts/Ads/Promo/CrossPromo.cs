@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Ads.Promo.Data;
+using Ads.Ui;
 using Analytics;
 using Binding;
 using Dev;
@@ -70,6 +71,7 @@ namespace Ads.Promo
                 return false;
             }
             HasLaunched = true;
+            if (StencilPremium.HasPremium) return false;
             return promo != null && !promo._destroyed && !promo._failed;
         }
 
