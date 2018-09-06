@@ -1,8 +1,5 @@
-#if STENCIL_ADMOB
-
 using System;
 using Ads.Ui;
-using GoogleMobileAds.Api;
 using Plugins.UI;
 using UI;
 using UnityEngine;
@@ -11,13 +8,18 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Util;
 
+#if STENCIL_ADMOB
+using GoogleMobileAds.Api;
+#endif
+
 namespace Ads.Admob
 {    
-    public class AdmobBannerArea : Controller<AdmobBannerArea>
+    public class AdmobBannerArea : Controller<AdmobBannerArea> 
     {   
         [Serializable]
         public class BannerEvent : UnityEvent
         {}
+#if STENCIL_ADMOB
         
         public static BannerEvent OnChange;
 
@@ -125,5 +127,5 @@ namespace Ads.Admob
             Debug.Log($"Setting banner height to {pixelHeight}");
         }
     }
-}
 #endif
+}

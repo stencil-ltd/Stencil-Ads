@@ -1,10 +1,10 @@
-﻿#if STENCIL_ADMOB
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Ads.Admob
 {
-    public class AdFreeView : MonoBehaviour
+    public class AdFreeView : MonoBehaviour 
     {
+#if STENCIL_ADMOB
         public static int Count { get; private set; } 
 
         private void OnEnable()
@@ -19,5 +19,5 @@ namespace Ads.Admob
                 AdmobBannerArea.ShowBanner();
         }
     }
-}
 #endif
+}
