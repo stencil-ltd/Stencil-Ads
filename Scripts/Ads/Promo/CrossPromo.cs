@@ -5,6 +5,7 @@ using Ads.Ui;
 using Analytics;
 using Binding;
 using Dev;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
@@ -18,6 +19,12 @@ namespace Ads.Promo
     [RequireComponent(typeof(VideoPlayer))]
     public class CrossPromo : MonoBehaviour
     {
+        [Serializable]
+        public enum LoopType
+        {
+            Outro, LoopSingle, LoopAll
+        }
+        
         public static int LastPromoIndex
         {
             get { return PlayerPrefs.GetInt("x-promo-last-index", -1); }
@@ -30,19 +37,28 @@ namespace Ads.Promo
             set { PlayerPrefsX.SetBool("x-promo-seen", value);}
         }
         
+        [Header("Fetching")]
         public string MetadataUrl;
         
+        [Header("Options")]
         public VideoSize Size = VideoSize.Video480;
-        public bool SkipCaching;
-        public bool SkipOnFirstLaunch = true;
+        public LoopType Loop;
+        public bool ShowOnFirstLaunch;
+        public bool ShowClickedAds;
+        public bool ShowForPremium;
 
-        public Image Tag;
+        [Header("Required UI")]
         public RawImage Render;
-        public Image Outro;
         public GameObject Content;
-        public GameObject New;
-        public Button Exit;
 
+        [Header("Optional UI")] 
+        [CanBeNull] public Text Title;
+        [CanBeNull] public Image Tag;
+        [CanBeNull] public Image Outro;
+        [CanBeNull] public GameObject New;
+        [CanBeNull] public Button Exit;
+
+        [Header("Events")]
         public UnityEvent OnAdStart;
         public UnityEvent OnAdFail;
         public UnityEvent OnAdExit;
@@ -50,7 +66,8 @@ namespace Ads.Promo
         [Bind]
         public VideoPlayer Player { get; private set; }
 
-        [Header("Debug Info")]
+        [Header("Debug")]
+        public bool SkipCaching;
         public PromoManifest Manifest;
         public PromoAsset Promo;// => _manifest?.Promos[_index];
         
@@ -65,13 +82,18 @@ namespace Ads.Promo
 
         private bool CanContinue(CrossPromo promo)
         {
-            if (!HasLaunched && SkipOnFirstLaunch)
+            if (!HasLaunched && !ShowOnFirstLaunch)
             {
+                Debug.Log("Skip On First Launch");
                 HasLaunched = true;
                 return false;
             }
             HasLaunched = true;
-            if (StencilPremium.HasPremium) return false;
+            if (!ShowForPremium && StencilPremium.HasPremium)
+            {
+                Debug.Log("Skip For Premium");
+                return false;
+            }
             return promo != null && !promo._destroyed && !promo._failed;
         }
 
@@ -100,8 +122,10 @@ namespace Ads.Promo
             Player.loopPointReached += OnLoop;
             Player.playOnAwake = false;
             Content.SetActive(false);
-            Outro.gameObject.SetActive(false);
-            Exit.onClick.AddListener(DoExit);
+            if (Outro != null)
+                Outro.gameObject.SetActive(false);
+            if (Exit != null)
+                Exit.onClick.AddListener(DoExit);
             new GameObject("Main Thread").AddComponent<UnityMainThreadDispatcher>();
         }
 
@@ -114,23 +138,7 @@ namespace Ads.Promo
                 if (!CanContinue(this)) yield break;
                 if (!SelectPromo()) yield break;
             }
-
-            var genre = Promo?.genre;
-            Tag.gameObject.SetActive(genre != null);
-            Tag.sprite = genre?.Tag;
-            
-            LastPromoIndex = _index;
-            var video = Promo.videos.GetForSize(Size);
-            Debug.Log($"Moving forward with promo {Promo.id} -> {video}");
-            Player.isLooping = Promo.outro == null;
-            Player.clip = video;
-            var res = Size.GetResolution();
-            Player.targetTexture = new RenderTexture(res.x, res.y, 24);
-            Render.texture = Player.targetTexture;
-            New.SetActive(!Promo.HasSeen);
-            Player.Play();
-            Promo.HasSeen = true;
-            PlayerPrefs.Save();
+            UpdatePromo();
         }
 
         private bool SelectPromo()
@@ -151,6 +159,31 @@ namespace Ads.Promo
             return true;
         }
 
+        private void UpdatePromo()
+        {
+            if (Tag != null)
+            {
+                var genre = Promo?.genre;
+                Tag.gameObject.SetActive(genre != null);
+                Tag.sprite = genre?.Tag;
+            }
+            LastPromoIndex = _index;
+            var video = Promo.videos.GetForSize(Size);
+            Debug.Log($"Moving forward with promo {Promo.id} -> {video}");
+            Player.isLooping = Promo.outro == null || Loop == LoopType.LoopSingle;
+            Player.clip = video;
+            var res = Size.GetResolution();
+            Player.targetTexture = new RenderTexture(res.x, res.y, 24);
+            Render.texture = Player.targetTexture;
+            if (New != null) 
+                New.SetActive(!Promo.HasSeen);
+            if (Title != null)
+                Title.text = Promo.name;
+            Player.Play();
+            Promo.HasSeen = true;
+            PlayerPrefs.Save();
+        }
+
         private void OnDestroy()
         {
             _destroyed = true;
@@ -165,7 +198,7 @@ namespace Ads.Promo
         private bool CanUsePromo()
         {
             if (Manifest.Promos[_index].id == Application.identifier) return false;
-            if (Manifest.Promos[_index].LastClick != null) return false;
+            if (!ShowClickedAds && Manifest.Promos[_index].LastClick != null) return false;
             return true;
         }
 
@@ -193,6 +226,7 @@ namespace Ads.Promo
         private void OnPrepare(VideoPlayer source)
         {
             Content.SetActive(true);
+            Render.enabled = true;
             if (!_started)
             {
                 _started = true;
@@ -204,7 +238,18 @@ namespace Ads.Promo
         {
             Debug.LogWarning("Finished.");
             _finished = true;
-            if (Promo.outro == null)
+
+            if (Loop == LoopType.LoopSingle)
+                return;
+
+            if (Loop == LoopType.LoopAll)
+            {
+                SelectPromo();
+                UpdatePromo();
+                return;
+            }
+            
+            if (Promo.outro == null || Outro == null)
                 return;
             
             Outro.sprite = Promo.outro;
