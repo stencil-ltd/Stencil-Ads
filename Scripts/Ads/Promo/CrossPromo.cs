@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Ads.Promo.Data;
 using Ads.Ui;
 using Analytics;
@@ -72,6 +73,7 @@ namespace Ads.Promo
         public PromoAsset Promo;// => _manifest?.Promos[_index];
         
         private PromoMetadata _meta;
+        private AssetBundle _bundle;
 
         private int _index = -1;
         private bool _failed;
@@ -187,6 +189,8 @@ namespace Ads.Promo
         private void OnDestroy()
         {
             _destroyed = true;
+            if (_bundle != null)
+                _bundle.Unload(true);
         }
 
         private void DoExit()
@@ -219,8 +223,8 @@ namespace Ads.Promo
                 yield break;
             }
 
-            var bundle = DownloadHandlerAssetBundle.GetContent(request);
-            Manifest = bundle.LoadAsset<PromoManifest>("Manifest");
+            _bundle = DownloadHandlerAssetBundle.GetContent(request);
+            Manifest = _bundle.LoadAsset<PromoManifest>("Manifest");
         }
 
         private void OnPrepare(VideoPlayer source)
