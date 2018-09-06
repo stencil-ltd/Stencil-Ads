@@ -1,4 +1,4 @@
-﻿#if UNITY_PURCHASING
+﻿#if STENCIL_IAP
 using System;
 using Binding;
 using JetBrains.Annotations;
