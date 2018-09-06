@@ -47,6 +47,7 @@ namespace Ads.Promo
         public bool ShowOnFirstLaunch;
         public bool ShowClickedAds;
         public bool ShowForPremium;
+        public bool PlayAudio;
 
         [Header("Required UI")]
         public RawImage Render;
@@ -174,6 +175,8 @@ namespace Ads.Promo
             Debug.Log($"Moving forward with promo {Promo.id} -> {video}");
             Player.isLooping = Promo.outro == null || Loop == LoopType.LoopSingle;
             Player.clip = video;
+            if (!PlayAudio)
+                Player.audioOutputMode = VideoAudioOutputMode.None;
             var res = Size.GetResolution();
             Player.targetTexture = new RenderTexture(res.x, res.y, 24);
             Render.texture = Player.targetTexture;
