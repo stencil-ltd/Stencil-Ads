@@ -1,17 +1,24 @@
-﻿#if STENCIL_IAP
-using System;
+﻿using System;
 using Binding;
 using JetBrains.Annotations;
 using UI;
 using UnityEngine;
+#if STENCIL_IAP
 using UnityEngine.Purchasing;
-using Util;
+#endif
 
 namespace Ads.Ui
 {
+#if STENCIL_IAP
     [RequireComponent(typeof(IAPListener))]
-    public class PremiumHandler : Controller<PremiumHandler>, IStoreListener
+#endif
+    public class PremiumHandler : Controller<PremiumHandler> 
+#if STENCIL_IAP 
+        , IStoreListener 
+#endif
     {
+        
+#if STENCIL_IAP
         public IAPButton Button;
         [CanBeNull] public Func<bool> CanShowPremium;
 
@@ -101,6 +108,6 @@ namespace Ads.Ui
         {
             
         }
+#endif
     }
 }
-#endif
