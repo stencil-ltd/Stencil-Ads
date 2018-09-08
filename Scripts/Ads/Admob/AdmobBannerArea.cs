@@ -1,5 +1,6 @@
 using System;
 using Ads.Ui;
+using JetBrains.Annotations;
 using Plugins.UI;
 using UI;
 using UnityEngine;
@@ -23,7 +24,7 @@ namespace Ads.Admob
         
         public static BannerEvent OnChange;
 
-        private static BannerView _banner;
+        [CanBeNull] private static BannerView _banner;
         private static BannerConfiguration _config;
         private static bool _bannerFailed;
         
@@ -37,28 +38,30 @@ namespace Ads.Admob
         {
             get
             {
-                if (!_visible)
-                    return 0f;
-                if (Application.isEditor || _banner == null)
+                if (Application.isEditor)
                     return 225f;
+                if (!_visible || _banner == null)
+                    return 0f;
                 return _banner.GetHeightInPixels();
             }
         }
         
         public static void ShowBanner()
         {
-            if (_visible || _banner == null || StencilPremium.HasPremium) return;
+            if (_visible) return;
             Debug.Log("Show Banner");
             _visible = true;
+            if (_banner == null) return;
             _banner.Show();
             Change();
         }
 
         public static void HideBanner()
         {
-            if (!_visible || _banner == null) return;
+            if (!_visible) return;
             Debug.Log("Hide Banner");
             _visible = false;
+            if (_banner == null) return;
             _banner.Hide();
             Change();
         }
@@ -85,20 +88,19 @@ namespace Ads.Admob
                 _config = AdSettings.Instance.BannerConfiguration;
                 MobileAds.Initialize(AdSettings.Instance.AppConfiguration);
                 MobileAds.SetiOSAppPauseOnBackground(true);
-            
-                _banner = new BannerView(_config, AdSize.SmartBanner, AdPosition.Bottom);
-                _banner.LoadAd(new AdRequest.Builder().Build());
-                _banner.OnAdFailedToLoad += (sender, args) => _bannerFailed = true;
-                
+
                 if (!StencilPremium.HasPremium)
-                    ShowBanner();
-                else HideBanner();
+                {
+                    _banner = new BannerView(_config, AdSize.SmartBanner, AdPosition.Bottom);
+                    _banner.LoadAd(new AdRequest.Builder().Build());
+                    _banner.OnAdFailedToLoad += (sender, args) => _bannerFailed = true;
+                }
             }
 
             if (_bannerFailed)
             {
                 _bannerFailed = false;
-                _banner.LoadAd(new AdRequest.Builder().Build());                
+                _banner?.LoadAd(new AdRequest.Builder().Build());                
             }
             
             Change();
@@ -106,7 +108,11 @@ namespace Ads.Admob
 
         private void OnPurchase(object sender, EventArgs e)
         {
-            HideBanner();
+            if (StencilPremium.HasPremium)
+            {
+                _banner?.Destroy();
+                _banner = null;
+            }
         }
 
         private static void Change()
