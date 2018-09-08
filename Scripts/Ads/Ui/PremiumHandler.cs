@@ -61,10 +61,11 @@ namespace Ads.Ui
                 enabled = false;
                 return;
             }
+
+            if (!CodelessIAPStoreListener.initializationComplete) return;
             
             if (_product == null)
-                _product = CodelessIAPStoreListener.Instance.GetProduct(Button.productId); 
-
+                _product = CodelessIAPStoreListener.Instance.GetProduct(Button.productId);
             if (_product == null)
             {
                 if (_logged) return;
@@ -72,7 +73,6 @@ namespace Ads.Ui
                 Debug.LogWarning("Can't find premium product");
                 return;
             }
-            
             if (!_product.hasReceipt)
             {
                 Debug.Log("No premium receipt, activating.");
