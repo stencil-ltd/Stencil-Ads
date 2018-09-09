@@ -1,4 +1,5 @@
 ﻿using System;
+using GoogleMobileAdsMediationTestSuite.Api;
 using UnityEngine;
 
 #if STENCIL_ADMOB
@@ -67,5 +68,23 @@ namespace Ads
             Interstitial?.CheckReload();
             Rewarded?.CheckReload();
         }
+
+        #if STENCIL_AD_TEST
+        public static void ShowTestSuite()
+        {
+            string id;
+            #if UNITY_IOS
+            id = AdSettings.Instance.AppId.Ios;
+            #else
+            id = AdSettings.Instance.AppId.Android;
+            #endif
+            MediationTestSuite.Show(id);
+        }
+        #else
+        public static void ShowTestSuite()
+        {
+            Debug.LogError("Mediation Test Suite not included!");
+        }
+        #endif
     }
 }
