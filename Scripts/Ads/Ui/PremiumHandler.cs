@@ -1,24 +1,25 @@
 ﻿using System;
 using Binding;
 using JetBrains.Annotations;
+using Purchasing;
 using UI;
 using UnityEngine;
-#if STENCIL_IAP
+#if UNITY_PURCHASING
 using UnityEngine.Purchasing;
 #endif
 
 namespace Ads.Ui
 {
-#if STENCIL_IAP
+#if UNITY_PURCHASING
     [RequireComponent(typeof(IAPListener))]
 #endif
     public class PremiumHandler : Controller<PremiumHandler> 
-#if STENCIL_IAP 
+#if UNITY_PURCHASING 
         , IStoreListener 
 #endif
     {
         
-#if STENCIL_IAP
+#if UNITY_PURCHASING
         public IAPButton Button;
         [CanBeNull] public Func<bool> CanShowPremium;
 
@@ -62,10 +63,11 @@ namespace Ads.Ui
                 return;
             }
 
-            if (!CodelessIAPStoreListener.initializationComplete) return;
-            
+            if (!StencilIap.IsReady()) return;
+
             if (_product == null)
-                _product = CodelessIAPStoreListener.Instance.GetProduct(Button.productId);
+                _product = Button.GetProduct();
+            
             if (_product == null)
             {
                 if (_logged) return;

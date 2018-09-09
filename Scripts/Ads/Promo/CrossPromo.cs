@@ -13,6 +13,7 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityEngine.Video;
 using Util;
+using Developers = Dev.Developers;
 using Random = UnityEngine.Random;
 
 namespace Ads.Promo

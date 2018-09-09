@@ -15,7 +15,7 @@ using GoogleMobileAds.Api;
 
 namespace Ads.Admob
 {    
-    public class AdmobBannerArea : Controller<AdmobBannerArea> 
+    public class AdmobBannerArea : Controller<AdmobBannerArea>
     {   
         [Serializable]
         public class BannerEvent : UnityEvent
@@ -23,6 +23,7 @@ namespace Ads.Admob
 #if STENCIL_ADMOB
         
         public static BannerEvent OnChange;
+        private static AdmobBannerArea Instance;
 
         [CanBeNull] private static BannerView _banner;
         private static BannerConfiguration _config;
@@ -66,19 +67,12 @@ namespace Ads.Admob
             Change();
         }
 
-        public override void DidRegister()
-        {
-            base.DidRegister();
-            StencilPremium.OnPremiumPurchased += OnPurchase;
-        }
-
-        public override void WillUnregister()
-        {
-            base.WillUnregister();
-            StencilPremium.OnPremiumPurchased -= OnPurchase;
-        }
-
         private static bool _init;
+
+        private void Awake()
+        {
+            Instance = this;
+        }
 
         private void Start()
         {            
@@ -104,6 +98,13 @@ namespace Ads.Admob
             }
             
             Change();
+            StencilPremium.OnPremiumPurchased += OnPurchase;
+        }
+
+        private void OnDestroy()
+        {
+            StencilPremium.OnPremiumPurchased -= OnPurchase;
+            Instance = Instance == this ? null : Instance;
         }
 
         private void OnPurchase(object sender, EventArgs e)
@@ -132,6 +133,6 @@ namespace Ads.Admob
                 ((RectTransform) Content.parent).rect.height - pixelHeight);  
             Debug.Log($"Setting banner height to {pixelHeight}");
         }
-    }
 #endif
+    }
 }

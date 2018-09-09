@@ -7,6 +7,13 @@ namespace Ads
     [CreateAssetMenu(menuName = "Stencil/Ads")]
     public class AdSettings : Singleton<AdSettings>
     {
+        [Serializable]
+        public struct AdId
+        {
+            public string Android;
+            public string Ios;
+        }
+        
         public AdId AppId;
         public AppIdConfiguration AppConfiguration { get; private set; }        
         
@@ -27,12 +34,5 @@ namespace Ads
             InterstitialConfiguration = new InterstitialConfiguration(InterstitialId.Android, InterstitialId.Ios);
             RewardConfiguration = new RewardedConfiguration(RewardedId.Android, RewardedId.Ios);
         }
-    }
-    
-    [Serializable]
-    public struct AdId
-    {
-        public string Android;
-        public string Ios;
     }
 }

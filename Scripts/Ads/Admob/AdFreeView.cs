@@ -18,6 +18,6 @@ namespace Ads.Admob
             if (--Count == 0)
                 AdmobBannerArea.ShowBanner();
         }
-    }
 #endif
+    }
 }
