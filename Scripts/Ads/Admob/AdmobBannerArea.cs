@@ -34,16 +34,15 @@ namespace Ads.Admob
 
         public RectTransform Content => Frame.Instance.Contents;
         public RectTransform Scrim => Frame.Instance.Scrim;
-        
+
+        private static bool HasBanner => Application.isEditor || _banner != null;
         public static float BannerHeight
         {
             get
             {
-                if (Application.isEditor)
-                    return 225f;
-                if (!_visible || _banner == null)
+                if (!_visible || !HasBanner)
                     return 0f;
-                return _banner.GetHeightInPixels();
+                return _banner?.GetHeightInPixels() ?? 225f;
             }
         }
         

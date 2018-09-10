@@ -163,6 +163,21 @@ namespace Ads.Promo
             return true;
         }
 
+        private long _frame;
+        private bool _playing;
+        private void OnEnable()
+        {
+            if (!_playing) return;
+            Player.frame = _frame;
+            Player.Play();
+        }
+
+        private void OnDisable()
+        {
+            _playing = Player.isPlaying;
+            _frame = Player.frame;
+        }
+
         private void UpdatePromo()
         {
             if (Tag != null)
