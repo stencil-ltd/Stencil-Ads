@@ -12,8 +12,8 @@ namespace Ratings
         
         public bool CheckAtAwake = true;
         public StencilRater Rater;
-
-        private void Awake()
+        
+        private void Start()
         {
             Rater.OnNever.AddListener(OnNever);
             Rater.OnPositive.AddListener(OnPositive);
