@@ -40,9 +40,11 @@ namespace Ads.Admob
         {
             get
             {
-                if (!_visible || !HasBanner)
+                if (!_visible || !HasBanner || StencilPremium.HasPremium)
                     return 0f;
-                return _banner?.GetHeightInPixels() ?? 225f;
+                if (Application.isEditor)
+                    return 225f;
+                return _banner.GetHeightInPixels();
             }
         }
         
@@ -87,6 +89,8 @@ namespace Ads.Admob
                     _banner = new BannerView(_config, AdSize.SmartBanner, AdPosition.Bottom);
                     _banner.LoadAd(new AdRequest.Builder().Build());
                     _banner.OnAdFailedToLoad += (sender, args) => _bannerFailed = true;
+                    if (Application.isEditor)
+                        ShowBanner();
                 }
             }
 
@@ -112,6 +116,7 @@ namespace Ads.Admob
             {
                 _banner?.Destroy();
                 _banner = null;
+                Change();
             }
         }
 
