@@ -89,8 +89,7 @@ namespace Ads.Admob
                     _banner = new BannerView(_config, AdSize.SmartBanner, AdPosition.Bottom);
                     _banner.LoadAd(new AdRequest.Builder().Build());
                     _banner.OnAdFailedToLoad += (sender, args) => _bannerFailed = true;
-                    if (Application.isEditor)
-                        ShowBanner();
+                    ShowBanner();
                 }
             }
 

@@ -28,13 +28,19 @@ namespace Ads
         public virtual void Init()
         {
             Load();
-            OnClose += (sender, args) => Load();
+            OnClose += (sender, args) => Objects.StartCoroutine(_OnClose());
             OnError += (sender, args) => Objects.StartCoroutine(HandleError(args));
         }
 
         public void Refresh()
         {
             if (!IsReady && !IsLoading) Load();
+        }
+
+        private IEnumerator _OnClose()
+        {
+            yield return null;
+            Load();
         }
 
         public void Show()
