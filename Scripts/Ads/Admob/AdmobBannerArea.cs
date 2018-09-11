@@ -32,6 +32,7 @@ namespace Ads.Admob
         private static bool _visible;
         public static bool IsBannerVisible() => _visible;
 
+        public bool IsTop;
         public RectTransform Content => Frame.Instance.Contents;
         public RectTransform Scrim => Frame.Instance.Scrim;
 
@@ -139,8 +140,8 @@ namespace Ads.Admob
             if (scaler == null) return;
             var ratio = scaler.referenceResolution.x / Screen.width;
             pixelHeight *= ratio;
-            Scrim?.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, pixelHeight);
-            Content.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, pixelHeight, 
+            Scrim?.SetInsetAndSizeFromParentEdge(IsTop ? RectTransform.Edge.Top : RectTransform.Edge.Bottom, 0, pixelHeight);
+            Content.SetInsetAndSizeFromParentEdge(IsTop ? RectTransform.Edge.Top : RectTransform.Edge.Bottom, pixelHeight, 
                 ((RectTransform) Content.parent).rect.height - pixelHeight);  
             Debug.Log($"Setting banner height to {pixelHeight}");
         }
