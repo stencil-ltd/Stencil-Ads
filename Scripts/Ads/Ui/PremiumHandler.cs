@@ -24,8 +24,9 @@ namespace Ads.Ui
 
         private Product _product;
 
-        private void Start()
+        public override void Register()
         {
+            base.Register();
             this.Bind();
             Button.gameObject.SetActive(false);
             if (!_listener)
@@ -39,9 +40,9 @@ namespace Ads.Ui
             _listener.onPurchaseFailed.AddListener(OnProductFail);
         }
 
-        protected override void OnDestroy()
+        public override void WillUnregister()
         {
-            base.OnDestroy();
+            base.WillUnregister();
             _listener.onPurchaseComplete.RemoveListener(OnProduct);
             _listener.onPurchaseFailed.RemoveListener(OnProductFail);
         }
