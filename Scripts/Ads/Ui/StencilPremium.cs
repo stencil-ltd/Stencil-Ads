@@ -8,7 +8,7 @@ namespace Ads.Ui
     {
         public static bool HasPremium
         {
-            get { return PlayerPrefsX.GetBool("stencil_premium"); }
+            get { return PremiumToggle.ForceEnabled ?? PlayerPrefsX.GetBool("stencil_premium"); }
             private set
             {
                 PlayerPrefsX.SetBool("stencil_premium", value);
@@ -21,6 +21,10 @@ namespace Ads.Ui
         {
             Debug.Log("Premium approved");
             HasPremium = true;
+        }
+
+        public static void NotifyPurchase()
+        {
             OnPremiumPurchased?.Invoke();
         }
     }

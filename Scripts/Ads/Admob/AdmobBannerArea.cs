@@ -85,12 +85,7 @@ namespace Ads.Admob
                 MobileAds.SetiOSAppPauseOnBackground(true);
 
                 if (!StencilPremium.HasPremium)
-                {
-                    _banner = new BannerView(_config, AdSize.SmartBanner, AdPosition.Bottom);
-                    _banner.LoadAd(new AdRequest.Builder().Build());
-                    _banner.OnAdFailedToLoad += (sender, args) => _bannerFailed = true;
-                    ShowBanner();
-                }
+                    CreateBanner();
             }
 
             if (_bannerFailed)
@@ -101,6 +96,14 @@ namespace Ads.Admob
             
             Change();
             StencilPremium.OnPremiumPurchased += OnPurchase;
+        }
+
+        private static void CreateBanner()
+        {
+            _banner = new BannerView(_config, AdSize.SmartBanner, AdPosition.Bottom);
+            _banner.LoadAd(new AdRequest.Builder().Build());
+            _banner.OnAdFailedToLoad += (sender, args) => _bannerFailed = true;
+            ShowBanner();
         }
 
         private void OnDestroy()
@@ -115,6 +118,11 @@ namespace Ads.Admob
             {
                 _banner?.Destroy();
                 _banner = null;
+                Change();
+            }
+            else
+            {
+                CreateBanner();
                 Change();
             }
         }
