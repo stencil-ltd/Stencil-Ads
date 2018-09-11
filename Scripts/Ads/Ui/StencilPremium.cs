@@ -21,6 +21,7 @@ namespace Ads.Ui
         {
             Debug.Log("Premium approved");
             HasPremium = true;
+            NotifyPurchase();
         }
 
         public static void NotifyPurchase()

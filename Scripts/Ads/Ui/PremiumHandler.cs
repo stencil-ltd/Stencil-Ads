@@ -1,6 +1,7 @@
 ﻿using System;
 using Binding;
 using JetBrains.Annotations;
+using Plugins.UI;
 using Purchasing;
 using UI;
 using UnityEngine;
@@ -10,27 +11,27 @@ using UnityEngine.Purchasing;
 
 namespace Ads.Ui
 {
-#if UNITY_PURCHASING
-    [RequireComponent(typeof(IAPListener))]
-#endif
-    public class PremiumHandler : Controller<PremiumHandler> 
+    public class PremiumHandler : Permanent<PremiumHandler> 
 #if UNITY_PURCHASING 
         , IStoreListener 
 #endif
     {
-        
 #if UNITY_PURCHASING
         public IAPButton Button;
         [CanBeNull] public Func<bool> CanShowPremium;
 
-        [Bind] private IAPListener _listener;
+        private IAPListener _listener;
 
         private Product _product;
 
         private void Start()
         {
             this.Bind();
-            Button.gameObject.SetActive(false);      
+            Button.gameObject.SetActive(false);
+            _listener = new GameObject("Premium Listener").AddComponent<IAPListener>();
+            _listener.consumePurchase = false;
+            _listener.onPurchaseComplete = new IAPListener.OnPurchaseCompletedEvent();
+            _listener.onPurchaseFailed = new IAPListener.OnPurchaseFailedEvent();
             _listener.onPurchaseComplete.AddListener(OnProduct);
             _listener.onPurchaseFailed.AddListener(OnProductFail);   
         }
@@ -59,11 +60,11 @@ namespace Ads.Ui
             if (StencilPremium.HasPremium)
             {
                 Debug.Log("Premium history detected");
-                enabled = false;
                 return;
             }
 
-            if (!StencilIap.IsReady()) return;
+            if (!StencilIap.IsReady()) 
+                return;
 
             if (_product == null)
                 _product = Button.GetProduct();
