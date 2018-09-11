@@ -39,6 +39,8 @@ namespace Ads.Promo
             set { PlayerPrefsX.SetBool("x-promo-seen", value);}
         }
         
+        private PromoMetadata _meta;
+        
         [Header("Fetching")]
         public string MetadataUrl;
         
@@ -74,7 +76,6 @@ namespace Ads.Promo
         public PromoManifest Manifest;
         public PromoAsset Promo;// => _manifest?.Promos[_index];
         
-        private PromoMetadata _meta;
         private AssetBundle _bundle;
 
         private int _index = -1;
@@ -298,6 +299,7 @@ namespace Ads.Promo
         
         private IEnumerator GetMetadata()
         {
+            if (_meta != null) yield break;
             var req = UnityWebRequest.Get(MetadataUrl);
             yield return req.SendWebRequest();
             if (!string.IsNullOrEmpty(req.error))

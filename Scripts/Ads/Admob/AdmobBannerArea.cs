@@ -23,14 +23,12 @@ namespace Ads.Admob
 #if STENCIL_ADMOB
         
         public static BannerEvent OnChange;
-        private static AdmobBannerArea Instance;
 
         [CanBeNull] private static BannerView _banner;
         private static BannerConfiguration _config;
         private static bool _bannerFailed;
         
         private static bool _visible;
-        public static bool IsBannerVisible() => _visible;
 
         public bool IsTop;
         public RectTransform Content => Frame.Instance.Contents;
@@ -51,7 +49,6 @@ namespace Ads.Admob
         
         public static void ShowBanner()
         {
-            if (_visible) return;
             Debug.Log("Show Banner");
             _visible = true;
             if (_banner == null) return;
@@ -61,7 +58,6 @@ namespace Ads.Admob
 
         public static void HideBanner()
         {
-            if (!_visible) return;
             Debug.Log("Hide Banner");
             _visible = false;
             if (_banner == null) return;
@@ -70,12 +66,6 @@ namespace Ads.Admob
         }
 
         private static bool _init;
-
-        private void Awake()
-        {
-            Instance = this;
-        }
-
         private void Start()
         {            
             if (!_init)
@@ -84,9 +74,7 @@ namespace Ads.Admob
                 _config = AdSettings.Instance.BannerConfiguration;
                 MobileAds.Initialize(AdSettings.Instance.AppConfiguration);
                 MobileAds.SetiOSAppPauseOnBackground(true);
-
-                if (!StencilPremium.HasPremium)
-                    CreateBanner();
+                if (!StencilPremium.HasPremium) CreateBanner();
             }
 
             if (_bannerFailed)
@@ -99,18 +87,19 @@ namespace Ads.Admob
             StencilPremium.OnPremiumPurchased += OnPurchase;
         }
 
+        private void OnDestroy()
+        {
+            StencilPremium.OnPremiumPurchased -= OnPurchase;
+        }
+
         private static void CreateBanner()
         {
             _banner = new BannerView(_config, AdSize.SmartBanner, AdPosition.Bottom);
             _banner.LoadAd(new AdRequest.Builder().Build());
             _banner.OnAdFailedToLoad += (sender, args) => _bannerFailed = true;
-            ShowBanner();
-        }
-
-        private void OnDestroy()
-        {
-            StencilPremium.OnPremiumPurchased -= OnPurchase;
-            Instance = Instance == this ? null : Instance;
+            if (!StencilPremium.HasPremium)
+                ShowBanner();
+            else HideBanner();
         }
 
         private void OnPurchase(object sender, EventArgs e)
