@@ -11,7 +11,7 @@ using UnityEngine.Purchasing;
 
 namespace Ads.Ui
 {
-    public class PremiumHandler : Permanent<PremiumHandler> 
+    public class PremiumHandler : Controller<PremiumHandler> 
 #if UNITY_PURCHASING 
         , IStoreListener 
 #endif
@@ -20,7 +20,7 @@ namespace Ads.Ui
         public IAPButton Button;
         [CanBeNull] public Func<bool> CanShowPremium;
 
-        private IAPListener _listener;
+        private static IAPListener _listener;
 
         private Product _product;
 
@@ -28,12 +28,22 @@ namespace Ads.Ui
         {
             this.Bind();
             Button.gameObject.SetActive(false);
-            _listener = new GameObject("Premium Listener").AddComponent<IAPListener>();
-            _listener.consumePurchase = false;
-            _listener.onPurchaseComplete = new IAPListener.OnPurchaseCompletedEvent();
-            _listener.onPurchaseFailed = new IAPListener.OnPurchaseFailedEvent();
+            if (!_listener)
+            {
+                _listener = new GameObject("Premium Listener").AddComponent<IAPListener>();
+                _listener.consumePurchase = false;
+                _listener.onPurchaseComplete = new IAPListener.OnPurchaseCompletedEvent();
+                _listener.onPurchaseFailed = new IAPListener.OnPurchaseFailedEvent();
+            }   
             _listener.onPurchaseComplete.AddListener(OnProduct);
-            _listener.onPurchaseFailed.AddListener(OnProductFail);   
+            _listener.onPurchaseFailed.AddListener(OnProductFail);
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            _listener.onPurchaseComplete.RemoveListener(OnProduct);
+            _listener.onPurchaseFailed.RemoveListener(OnProductFail);
         }
 
         public void OnProductFail(Product product, PurchaseFailureReason reason)
@@ -58,10 +68,7 @@ namespace Ads.Ui
         private void Update()
         {
             if (StencilPremium.HasPremium)
-            {
-                Debug.Log("Premium history detected");
                 return;
-            }
 
             if (!StencilIap.IsReady()) 
                 return;
@@ -80,13 +87,11 @@ namespace Ads.Ui
             {
                 Debug.Log("No premium receipt, activating.");
                 Button.gameObject.SetActive(CanShowPremium?.Invoke() ?? true);
-                enabled = false;
             }
             else
             {
                 Debug.Log("Receipt found for premium.");
                 StencilPremium.Purchase();
-                enabled = false;
             }
         }
 
