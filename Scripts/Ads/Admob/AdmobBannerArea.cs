@@ -144,6 +144,7 @@ namespace Ads.Admob
             Content.SetInsetAndSizeFromParentEdge(IsTop ? RectTransform.Edge.Top : RectTransform.Edge.Bottom, pixelHeight, 
                 ((RectTransform) Content.parent).rect.height - pixelHeight);  
             Debug.Log($"Setting banner height to {pixelHeight}");
+            Scrim?.gameObject.SetActive(pixelHeight >= 1f);
         }
 #endif
     }
