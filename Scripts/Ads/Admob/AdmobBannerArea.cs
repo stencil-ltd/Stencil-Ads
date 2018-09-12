@@ -58,8 +58,7 @@ namespace Ads.Admob
         {
             Debug.Log("Show Banner");
             _visible = true;
-            if (_banner == null) return;
-            _banner.Show();
+            _banner?.Show();
             Change();
         }
 
@@ -67,8 +66,7 @@ namespace Ads.Admob
         {
             Debug.Log("Hide Banner");
             _visible = false;
-            if (_banner == null) return;
-            _banner.Hide();
+            _banner?.Hide();
             Change();
         }
 
@@ -109,9 +107,6 @@ namespace Ads.Admob
                 Tracking.Instance.Track("ad_failed", "type", "banner");
                 _bannerFailed = true;
             };
-            if (!StencilPremium.HasPremium)
-                ShowBanner();
-            else HideBanner();
         }
 
         private static void LoadAd()
