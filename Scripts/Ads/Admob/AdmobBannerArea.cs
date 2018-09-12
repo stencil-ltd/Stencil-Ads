@@ -92,9 +92,9 @@ namespace Ads.Admob
             StencilPremium.OnPremiumPurchased -= OnPurchase;
         }
 
-        private static void CreateBanner()
+        private void CreateBanner()
         {
-            _banner = new BannerView(_config, AdSize.SmartBanner, AdPosition.Bottom);
+            _banner = new BannerView(_config, AdSize.SmartBanner, IsTop ? AdPosition.Top : AdPosition.Bottom);
             LoadAd();
             _banner.OnAdFailedToLoad += (sender, args) =>
             {
