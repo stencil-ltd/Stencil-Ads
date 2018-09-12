@@ -8,7 +8,7 @@ namespace Ads.Ui
     {
         public static bool HasPremium
         {
-            get { return PremiumToggle.ForceEnabled ?? PlayerPrefsX.GetBool("stencil_premium"); }
+            get { return !AdSettings.Instance.IgnorePremium && (PremiumToggle.ForceEnabled ?? PlayerPrefsX.GetBool("stencil_premium")); }
             private set
             {
                 PlayerPrefsX.SetBool("stencil_premium", value);

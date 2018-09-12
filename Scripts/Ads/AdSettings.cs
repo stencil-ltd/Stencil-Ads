@@ -17,7 +17,8 @@ namespace Ads
 
         public string[] TestIds { get; } =
         {
-            "D50D9F51E331521E6AED71AA95834F1D"
+            "D50D9F51E331521E6AED71AA95834F1D",
+            "BE68C06901E98BF1F8C126AD343CD229"
         };
         
         #if STENCIL_ADMOB
@@ -29,11 +30,13 @@ namespace Ads
                 foreach (var str in TestIds)
                     builder.AddTestDevice(str);
             }
+            Debug.Log("Create Ad Request");
             return builder.Build();
         }
         #endif
 
         public bool IgnoreTestIds;
+        public bool IgnorePremium;
         
         public AdId AppId;
         public AppIdConfiguration AppConfiguration { get; private set; }        

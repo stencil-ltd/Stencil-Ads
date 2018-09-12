@@ -66,8 +66,11 @@ namespace Ads.Ui
         }
 
         private bool _logged;
+        private bool _finished;
+        
         private void Update()
         {
+            if (_finished) return;
             if (StencilPremium.HasPremium)
                 return;
 
@@ -94,6 +97,7 @@ namespace Ads.Ui
                 Debug.Log("Receipt found for premium.");
                 StencilPremium.Purchase();
             }
+            _finished = true;
         }
 
         public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs e)
