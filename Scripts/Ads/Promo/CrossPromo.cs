@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Ads.Promo.Data;
 using Ads.Ui;
 using Analytics;
@@ -39,7 +40,7 @@ namespace Ads.Promo
             set { PlayerPrefsX.SetBool("x-promo-seen", value);}
         }
         
-        private PromoMetadata _meta;
+        private static PromoMetadata _meta;
         
         [Header("Fetching")]
         public string MetadataUrl;
@@ -221,8 +222,10 @@ namespace Ads.Promo
 
         private bool CanUsePromo()
         {
-            if (Manifest.Promos[_index].id == Application.identifier) return false;
-            if (!ShowClickedAds && Manifest.Promos[_index].LastClick != null) return false;
+            var promo = Manifest.Promos[_index]; 
+            if (promo.id == Application.identifier) return false;
+            if (!ShowClickedAds && promo.LastClick != null) return false;
+            if (_meta.excludes.GetExcludeList().Contains(promo.id)) return false;
             return true;
         }
 

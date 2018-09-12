@@ -15,6 +15,16 @@ namespace Ads.Promo
                     return new Vector2Int(270, 480);
             }
         }
+
+        public static string[] GetExcludeList(this Excludes excludes)
+        {
+            Debug.Log($"Looking up platform url for {Application.platform}...");
+            if (Application.isEditor || Application.platform == RuntimePlatform.Android)
+                return excludes.android;
+            if (Application.platform == RuntimePlatform.IPhonePlayer)
+                return excludes.iphone;
+            return null;
+        }
         
         public static string GetBasePlatformUrl(this DownloadUrls urls)
         {
