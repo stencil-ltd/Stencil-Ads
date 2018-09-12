@@ -43,7 +43,7 @@ namespace Ads.Admob
                 if (!_visible || !HasBanner || StencilPremium.HasPremium)
                     return 0f;
                 if (Application.isEditor)
-                    return 225f;
+                    return 150f;
                 return _banner.GetHeightInPixels();
             }
         }
