@@ -96,7 +96,11 @@ namespace Ads.Admob
         {
             _banner = new BannerView(_config, AdSize.SmartBanner, AdPosition.Bottom);
             LoadAd();
-            _banner.OnAdFailedToLoad += (sender, args) => _bannerFailed = true;
+            _banner.OnAdFailedToLoad += (sender, args) =>
+            {
+                Debug.LogError($"Banner AdRequest Failed");
+                _bannerFailed = true;
+            };
             if (!StencilPremium.HasPremium)
                 ShowBanner();
             else HideBanner();

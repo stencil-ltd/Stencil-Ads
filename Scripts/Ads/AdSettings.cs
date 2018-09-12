@@ -30,7 +30,7 @@ namespace Ads
                 foreach (var str in TestIds)
                     builder.AddTestDevice(str);
             }
-            Debug.Log("Create Ad Request");
+            Debug.Log("Create AdRequest");
             return builder.Build();
         }
         #endif
