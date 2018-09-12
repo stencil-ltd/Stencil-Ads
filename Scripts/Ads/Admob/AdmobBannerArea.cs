@@ -40,13 +40,16 @@ namespace Ads.Admob
         {
             get
             {
-                if (!_visible || !HasBanner || StencilPremium.HasPremium)
+                if (!WillDisplayBanner)
                     return 0f;
                 if (Application.isEditor)
                     return 150f;
                 return _banner.GetHeightInPixels();
             }
         }
+
+        public static bool WillDisplayBanner
+            => _visible && HasBanner && !StencilPremium.HasPremium;
 
         public static void SetBannerVisible(bool visible)
         {
@@ -100,13 +103,18 @@ namespace Ads.Admob
         private void CreateBanner()
         {
             _banner = new BannerView(_config, AdSize.SmartBanner, IsTop ? AdPosition.Top : AdPosition.Bottom);
-            LoadAd();
+            _banner.OnAdLoaded += (sender, args) =>
+            {
+                if (!WillDisplayBanner)
+                    _banner.Hide();
+            };
             _banner.OnAdFailedToLoad += (sender, args) =>
             {
                 Debug.LogError($"Banner AdRequest Failed");
                 Tracking.Instance.Track("ad_failed", "type", "banner");
                 _bannerFailed = true;
             };
+            LoadAd();
         }
 
         private static void LoadAd()
