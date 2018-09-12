@@ -1,4 +1,5 @@
 using System;
+using GoogleMobileAds.Api;
 using UnityEngine;
 using Util;
 
@@ -13,6 +14,26 @@ namespace Ads
             public string Android;
             public string Ios;
         }
+
+        public string[] TestIds { get; } =
+        {
+            "D50D9F51E331521E6AED71AA95834F1D"
+        };
+        
+        #if STENCIL_ADMOB
+        public AdRequest CreateRequest()
+        {
+            var builder = new AdRequest.Builder();
+            if (!IgnoreTestIds)
+            {
+                foreach (var str in TestIds)
+                    builder.AddTestDevice(str);
+            }
+            return builder.Build();
+        }
+        #endif
+
+        public bool IgnoreTestIds = true;
         
         public AdId AppId;
         public AppIdConfiguration AppConfiguration { get; private set; }        

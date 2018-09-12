@@ -80,7 +80,7 @@ namespace Ads.Admob
             if (_bannerFailed)
             {
                 _bannerFailed = false;
-                _banner?.LoadAd(new AdRequest.Builder().Build());                
+                LoadAd();          
             }
             
             Change();
@@ -95,11 +95,16 @@ namespace Ads.Admob
         private static void CreateBanner()
         {
             _banner = new BannerView(_config, AdSize.SmartBanner, AdPosition.Bottom);
-            _banner.LoadAd(new AdRequest.Builder().Build());
+            LoadAd();
             _banner.OnAdFailedToLoad += (sender, args) => _bannerFailed = true;
             if (!StencilPremium.HasPremium)
                 ShowBanner();
             else HideBanner();
+        }
+
+        private static void LoadAd()
+        {
+            _banner?.LoadAd(AdSettings.Instance.CreateRequest());
         }
 
         private void OnPurchase(object sender, EventArgs e)

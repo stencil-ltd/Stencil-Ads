@@ -28,7 +28,7 @@ namespace Ads.Admob
 
         protected override void LoadInternal()
         {
-            _ad.LoadAd(new AdRequest.Builder().Build(), UnitId);
+            _ad.LoadAd(AdSettings.Instance.CreateRequest(), UnitId);
         }
     }
 }
