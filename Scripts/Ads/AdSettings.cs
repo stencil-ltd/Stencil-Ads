@@ -33,7 +33,7 @@ namespace Ads
         }
         #endif
 
-        public bool IgnoreTestIds = true;
+        public bool IgnoreTestIds;
         
         public AdId AppId;
         public AppIdConfiguration AppConfiguration { get; private set; }        
