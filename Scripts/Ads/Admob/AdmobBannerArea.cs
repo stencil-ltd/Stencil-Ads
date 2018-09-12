@@ -6,10 +6,6 @@ using Plugins.UI;
 using UI;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using Util;
-
 #if STENCIL_ADMOB
 using GoogleMobileAds.Api;
 #endif
@@ -62,7 +58,7 @@ namespace Ads.Admob
             Debug.Log("Show Banner");
             _visible = true;
             _banner?.Show();
-            Change();
+            Instance?.Change();
         }
 
         public static void HideBanner()
@@ -70,7 +66,7 @@ namespace Ads.Admob
             Debug.Log("Hide Banner");
             _visible = false;
             _banner?.Hide();
-            Change();
+            Instance?.Change();
         }
 
         private static bool _init;
@@ -137,23 +133,10 @@ namespace Ads.Admob
             }
         }
 
-        private static void Change()
+        private void Change()
         {
-            Instance?.SetBannerSize(BannerHeight);
+            Frame.Instance?.SetBannerHeight(BannerHeight, IsTop);
             OnChange?.Invoke();
-        }
-        
-        private void SetBannerSize(float pixelHeight)
-        {            
-            var scaler = Frame.Instance.GetComponentInParent<CanvasScaler>();
-            if (scaler == null) return;
-            var ratio = scaler.referenceResolution.x / Screen.width;
-            pixelHeight *= ratio;
-            Scrim?.SetInsetAndSizeFromParentEdge(IsTop ? RectTransform.Edge.Top : RectTransform.Edge.Bottom, 0, pixelHeight);
-            Content.SetInsetAndSizeFromParentEdge(IsTop ? RectTransform.Edge.Top : RectTransform.Edge.Bottom, pixelHeight, 
-                ((RectTransform) Content.parent).rect.height - pixelHeight);  
-            Debug.Log($"Setting banner height to {pixelHeight}");
-            Scrim?.gameObject.SetActive(pixelHeight >= 1f);
         }
 #endif
     }
