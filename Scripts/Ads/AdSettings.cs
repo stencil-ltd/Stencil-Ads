@@ -1,4 +1,5 @@
 using System;
+using Analytics;
 using GoogleMobileAds.Api;
 using UnityEngine;
 using Util;
@@ -22,7 +23,7 @@ namespace Ads
         };
         
         #if STENCIL_ADMOB
-        public AdRequest CreateRequest()
+        public AdRequest CreateRequest(string type)
         {
             var builder = new AdRequest.Builder();
             if (!IgnoreTestIds)
@@ -31,6 +32,9 @@ namespace Ads
                     builder.AddTestDevice(str);
             }
             Debug.Log("Create AdRequest");
+            Tracking.Instance
+                .Track("ad_request", "type", type)
+                .Track($"ad_request_{type}");
             return builder.Build();
         }
         #endif

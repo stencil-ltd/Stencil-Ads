@@ -1,5 +1,6 @@
 using System;
 using Ads.Ui;
+using Analytics;
 using JetBrains.Annotations;
 using Plugins.UI;
 using UI;
@@ -99,6 +100,7 @@ namespace Ads.Admob
             _banner.OnAdFailedToLoad += (sender, args) =>
             {
                 Debug.LogError($"Banner AdRequest Failed");
+                Tracking.Instance.Track("ad_failed", "type", "banner");
                 _bannerFailed = true;
             };
             if (!StencilPremium.HasPremium)
@@ -108,7 +110,7 @@ namespace Ads.Admob
 
         private static void LoadAd()
         {
-            _banner?.LoadAd(AdSettings.Instance.CreateRequest());
+            _banner?.LoadAd(AdSettings.Instance.CreateRequest("banner"));
         }
 
         private void OnPurchase(object sender, EventArgs e)

@@ -21,7 +21,7 @@ namespace Ads.Admob
         {
             _ad?.Destroy();
             _ad = new InterstitialAd(UnitId);
-            _ad.LoadAd(AdSettings.Instance.CreateRequest());
+            _ad.LoadAd(AdSettings.Instance.CreateRequest("interstitial"));
             _ad.OnAdLoaded += (sender, args) => Objects.Enqueue(NotifyLoad);
             _ad.OnAdFailedToLoad += (sender, args) => Objects.Enqueue(NotifyError);
             _ad.OnAdClosed += (sender, args) => Objects.Enqueue(() =>
