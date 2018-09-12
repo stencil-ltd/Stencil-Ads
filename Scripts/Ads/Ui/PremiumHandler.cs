@@ -50,6 +50,7 @@ namespace Ads.Ui
         public void OnProductFail(Product product, PurchaseFailureReason reason)
         {
             Debug.LogError($"Could not buy {product} because {reason}");
+            CheckPremium();
         }
 
         public void OnProduct(Product product)
@@ -61,43 +62,47 @@ namespace Ads.Ui
         {
             if (product.definition.id != Button.productId || !product.hasReceipt) return false;
             StencilPremium.Purchase();
-            Button.gameObject.SetActive(false);
+            CheckPremium();
             return true;
         }
-
-        private bool _logged;
-        private bool _finished;
         
         private void Update()
         {
-            if (_finished) return;
+            if (_product != null) return;
+            _product = Button.GetProduct();
+            if (_product != null) CheckPremium();
+        }
+
+        private bool _purchased;
+        private bool _CanShowPremium()
+        {
             if (StencilPremium.HasPremium)
-                return;
-
+                return false;
+            
             if (!StencilIap.IsReady()) 
-                return;
-
+                return false;
+            
             if (_product == null)
                 _product = Button.GetProduct();
             
             if (_product == null)
-            {
-                if (_logged) return;
-                _logged = true;
-                Debug.LogWarning("Can't find premium product");
-                return;
-            }
+                return false;
+
             if (!_product.hasReceipt)
+                return CanShowPremium?.Invoke() != false;
+
+            if (!_purchased)
             {
-                Debug.Log("No premium receipt, activating.");
-                Button.gameObject.SetActive(CanShowPremium?.Invoke() ?? true);
-            }
-            else
-            {
+                _purchased = true;
                 Debug.Log("Receipt found for premium.");
                 StencilPremium.Purchase();
             }
-            _finished = true;
+            return false;
+        }
+
+        public void CheckPremium()
+        {
+            Button.gameObject.SetActive(_CanShowPremium());
         }
 
         public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs e)

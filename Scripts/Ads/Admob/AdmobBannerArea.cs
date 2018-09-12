@@ -47,6 +47,12 @@ namespace Ads.Admob
                 return _banner.GetHeightInPixels();
             }
         }
+
+        public static void SetBannerVisible(bool visible)
+        {
+            if (visible) ShowBanner(); 
+            else HideBanner();
+        }
         
         public static void ShowBanner()
         {
