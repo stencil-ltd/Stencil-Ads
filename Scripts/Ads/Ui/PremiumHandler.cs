@@ -69,8 +69,9 @@ namespace Ads.Ui
         private void Update()
         {
             if (_product != null) return;
+            if (!Button.HasProduct()) return;
             _product = Button.GetProduct();
-            if (_product != null) CheckPremium();
+            CheckPremium();
         }
 
         private bool _purchased;
