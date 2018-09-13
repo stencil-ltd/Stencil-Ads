@@ -9,6 +9,7 @@ namespace Ratings
     public class StencilRateController : Controller<StencilRateController>
     {
         public float DelayShow = 1f;
+        public float MinimumSessionLength = 30f;
         
         public bool CheckAtAwake = true;
         public StencilRater Rater;
@@ -28,6 +29,8 @@ namespace Ratings
 
         public bool Check()
         {
+            if (Time.time < MinimumSessionLength)
+                return false;
             if (!RateBox.Instance.CheckConditionsAreMet()) 
                 return false;
             ForceShow();
