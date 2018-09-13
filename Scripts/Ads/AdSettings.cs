@@ -19,7 +19,8 @@ namespace Ads
         public string[] TestIds { get; } =
         {
             "D50D9F51E331521E6AED71AA95834F1D",
-            "BE68C06901E98BF1F8C126AD343CD229"
+            "BE68C06901E98BF1F8C126AD343CD229",
+            "2d9c4c646686985dbf30017b0898acfd"
         };
         
         #if STENCIL_ADMOB
