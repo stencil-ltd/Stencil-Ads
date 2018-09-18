@@ -1,9 +1,9 @@
 ﻿using System;
-using GoogleMobileAdsMediationTestSuite.Api;
 using UnityEngine;
 
 #if STENCIL_ADMOB
 using Ads.Admob;
+using GoogleMobileAdsMediationTestSuite.Api;
 #endif
 
 namespace Ads
@@ -69,6 +69,7 @@ namespace Ads
             Rewarded?.CheckReload();
         }
 
+#if STENCIL_ADMOB
         public static void ShowTestSuite()
         {
             string id;
@@ -79,5 +80,6 @@ namespace Ads
             #endif
             MediationTestSuite.Show(id);
         }
+#endif
     }
 }
