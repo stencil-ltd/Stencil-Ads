@@ -69,7 +69,6 @@ namespace Ads
             Rewarded?.CheckReload();
         }
 
-        #if STENCIL_AD_TEST
         public static void ShowTestSuite()
         {
             string id;
@@ -80,11 +79,5 @@ namespace Ads
             #endif
             MediationTestSuite.Show(id);
         }
-        #else
-        public static void ShowTestSuite()
-        {
-            Debug.LogError("Mediation Test Suite not included!");
-        }
-        #endif
     }
 }
