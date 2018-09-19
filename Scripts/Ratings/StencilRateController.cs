@@ -1,11 +1,9 @@
 using System;
-using PaperPlaneTools;
 using UI;
 using UnityEngine;
 
 namespace Ratings
 {
-    [RequireComponent(typeof(RateBoxPrefabScript))]
     public class StencilRateController : Controller<StencilRateController>
     {
         public float DelayShow = 1f;
@@ -29,9 +27,7 @@ namespace Ratings
 
         public bool Check()
         {
-            if (Time.time < MinimumSessionLength)
-                return false;
-            if (!RateBox.Instance.CheckConditionsAreMet()) 
+            if (!StencilRateHelpers.CheckConditions()) 
                 return false;
             ForceShow();
             return true;
@@ -39,15 +35,13 @@ namespace Ratings
 
         public void ForceShow()
         {
-            var rate = RateBox.Instance;
-            rate.Statistics.DialogShownAt = rate.Time();
-            rate.SaveStatistics();
+            StencilRateHelpers.MarkShown();
             Rater.gameObject.SetActive(true);
         }
 
         private void OnPositive(int arg0)
         {
-            RateBox.Instance.GoToRateUrl();
+            StencilRateHelpers.GoToRateUrl();
             Rater.Dismiss();
         }
 
@@ -58,8 +52,7 @@ namespace Ratings
 
         private void OnNever()
         {
-            RateBox.Instance.Statistics.DialogIsRejected = true;
-            RateBox.Instance.SaveStatistics();
+            StencilRateHelpers.Reject();
         }
     }
 }
