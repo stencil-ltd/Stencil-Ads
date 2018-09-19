@@ -39,12 +39,14 @@ namespace Ratings
 
         private void OnPositive(int arg0)
         {
+            StencilRateHelpers.RecordRating(arg0);
             StencilRateHelpers.GoToRateUrl();
             Rater.Dismiss();
         }
 
         private void OnNegative(int arg0)
         {
+            StencilRateHelpers.RecordRating(arg0);
             Rater.AskForFeedback();
         }
 

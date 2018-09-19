@@ -82,6 +82,11 @@ namespace Ratings
             SessionCount++;
         }
 
+        public static void RecordRating(int stars)
+        {
+            IsRated = true;
+        }
+
         public static void Reject()
         {
             IsRejected = true;
