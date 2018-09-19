@@ -32,6 +32,19 @@ namespace Ratings
             }
         }
         
+        public static bool IsRated
+        {
+            get
+            {
+                return PlayerPrefsX.GetBool("stencil_rate_rated");
+            }
+            set
+            {
+                PlayerPrefsX.SetBool("stencil_rate_rated", value);
+                PlayerPrefs.Save();
+            }
+        }
+        
         public static DateTime? LastShow
         {
             get { return PlayerPrefsX.GetDateTime("stencil_rate_last"); }
@@ -93,6 +106,12 @@ namespace Ratings
             if (IsRejected)
             {
                 Debug.Log("Reject: User rejected rating");
+                return false;
+            }
+
+            if (IsRated)
+            {
+                Debug.Log("Reject: User already rated");
                 return false;
             }
 

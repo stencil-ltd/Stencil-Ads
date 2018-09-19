@@ -1,13 +1,11 @@
 using System;
 using UI;
-using UnityEngine;
 
 namespace Ratings
 {
     public class StencilRateController : Controller<StencilRateController>
     {
         public float DelayShow = 1f;
-        public float MinimumSessionLength = 30f;
         
         public bool CheckAtAwake = true;
         public StencilRater Rater;

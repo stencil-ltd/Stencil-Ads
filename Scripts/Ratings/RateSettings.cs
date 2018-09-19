@@ -13,7 +13,7 @@ namespace Ratings
         [Header("Timings")]
         public int MinSessionCount = 5;
         public float HoursAfterInstall = 24f;
-        public float HoursAfterLaunch = 0.5f;
+        public float HoursAfterLaunch = 0.1f;
         public float HoursAfterPostpone = 72;
         
         public bool RequireInternetConnection => true;
