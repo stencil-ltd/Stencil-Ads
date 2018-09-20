@@ -7,6 +7,8 @@ namespace Ratings
 {
     public static class StencilRateHelpers
     {
+        public static bool IsEnabled => RateSettings.Instance != null;
+        
         public static int SessionCount
         {
             get { return PlayerPrefs.GetInt("stencil_rate_sessions"); }

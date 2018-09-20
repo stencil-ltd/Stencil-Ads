@@ -1,5 +1,6 @@
 using System;
 using UI;
+using UnityEngine;
 
 namespace Ratings
 {
@@ -19,6 +20,13 @@ namespace Ratings
 
         private void OnEnable()
         {
+            if (!StencilRateHelpers.IsEnabled)
+            {
+                Debug.LogWarning("Rating is not enabled...");
+                enabled = false;
+                return;
+            }
+            
             if (CheckAtAwake)
                 Invoke(nameof(Check), Math.Max(0.1f, DelayShow));
         }
