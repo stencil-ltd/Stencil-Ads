@@ -138,6 +138,25 @@ namespace Ads.Admob
             Frame.Instance?.SetBannerHeight(BannerHeight, IsTop);
             OnChange?.Invoke();
         }
+#else
+        public static bool WillDisplayBanner
+            => false;
+
+        public static void SetBannerVisible(bool visible)
+        {
+            if (visible) ShowBanner(); 
+            else HideBanner();
+        }
+        
+        public static void ShowBanner()
+        {
+            Debug.Log("Show Banner");
+        }
+
+        public static void HideBanner()
+        {
+            Debug.Log("Hide Banner");
+        }
 #endif
     }
 }

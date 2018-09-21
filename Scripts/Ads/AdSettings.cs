@@ -1,8 +1,11 @@
 using System;
-using Analytics;
-using GoogleMobileAds.Api;
 using UnityEngine;
 using Util;
+
+#if STENCIL_ADMOB
+using GoogleMobileAds.Api;
+using Analytics;
+#endif
 
 namespace Ads
 {

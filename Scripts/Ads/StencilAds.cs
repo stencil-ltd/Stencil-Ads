@@ -21,21 +21,22 @@ namespace Ads
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         public static void OnSceneLoad()
         {
-            CheckReload();   
+            CheckReload();
         }
-        
+
         private static bool _init;
+
         public static void Init()
         {
             Debug.Log("Attempt to initialize StencilAds");
             if (_init) return;
             _init = true;
-        
+
 #if UNITY_IPHONE && !UNITY_EDITOR
             Debug.Log("StencilAds disabled webview JIT.");
             SetEnv.Set("JSC_useJIT", "false");
 #endif
-        
+
 #if STENCIL_ADMOB
             Debug.Log("StencilAds (admob) initializing");
             Interstitial = new AdmobInterstitial(_interstitial);
@@ -79,6 +80,10 @@ namespace Ads
             id = AdSettings.Instance.AppId.Android;
             #endif
             MediationTestSuite.Show(id);
+        }
+#else
+        public static void ShowTestSuite()
+        {
         }
 #endif
     }
