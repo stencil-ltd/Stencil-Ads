@@ -1,5 +1,5 @@
-using Lifecycle;
 using UnityEngine;
+using Util;
 
 namespace Ratings
 {
