@@ -6,11 +6,13 @@ namespace Ratings
 {
     public class StencilRateController : Controller<StencilRateController>
     {
+        public RateSettings Settings = new RateSettings();
+
+        [Header("UI")]
         public float DelayShow = 1f;
-        
         public bool CheckAtAwake = true;
         public StencilRater Rater;
-        
+
         private void Start()
         {
             Rater.OnNever.AddListener(OnNever);
@@ -33,7 +35,7 @@ namespace Ratings
 
         public bool Check()
         {
-            if (!StencilRateHelpers.CheckConditions()) 
+            if (!Settings.CheckConditions()) 
                 return false;
             ForceShow();
             return true;
@@ -48,7 +50,7 @@ namespace Ratings
         private void OnPositive(int arg0)
         {
             StencilRateHelpers.RecordRating(arg0);
-            StencilRateHelpers.GoToRateUrl();
+            Settings.GoToRateUrl();
             Rater.Dismiss();
         }
 

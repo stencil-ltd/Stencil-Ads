@@ -7,7 +7,7 @@ namespace Ratings
 {
     public static class StencilRateHelpers
     {
-        public static bool IsEnabled => RateSettings.Instance != null;
+        public static bool IsEnabled => StencilRateController.Instance != null;
         
         public static int SessionCount
         {
@@ -94,9 +94,9 @@ namespace Ratings
             IsRejected = true;
         }
 
-        public static void GoToRateUrl()
+        public static void GoToRateUrl(this RateSettings settings)
         {
-            Application.OpenURL(RateSettings.Instance.RateUrl);
+            Application.OpenURL(settings.RateUrl);
         }
 
         public static void MarkShown()
@@ -104,7 +104,7 @@ namespace Ratings
             LastShow = DateTime.UtcNow;
         }
         
-        public static bool CheckConditions()
+        public static bool CheckConditions(this RateSettings settings)
         {
             var firstCheck = FirstCheck ?? DateTime.UtcNow;
             FirstCheck = firstCheck;
@@ -122,14 +122,14 @@ namespace Ratings
                 return false;
             }
 
-            if (RateSettings.Instance.RequireInternetConnection &&
+            if (settings.RequireInternetConnection &&
                 Application.internetReachability == NetworkReachability.NotReachable)
             {
                 Debug.Log("Reject: No internet");
                 return false;
             }
 
-            var afterLaunch = RateSettings.Instance.HoursAfterLaunch;
+            var afterLaunch = settings.HoursAfterLaunch;
             if (afterLaunch > 0f)
             {
                 var hoursRuntime = Time.time / 60f / 60f;
@@ -144,7 +144,7 @@ namespace Ratings
             var last = LastShow;
             if (last != null)
             {
-                var postpone = RateSettings.Instance.HoursAfterPostpone;
+                var postpone = settings.HoursAfterPostpone;
                 if (postpone > 0f && now < last.Value.AddHours(postpone))
                 {
                     Debug.Log("Reject: Postponed.");
@@ -152,14 +152,14 @@ namespace Ratings
                 }
             }
 
-            var afterInstall = RateSettings.Instance.HoursAfterInstall;
+            var afterInstall = settings.HoursAfterInstall;
             if (afterInstall > 0f && now < firstCheck.AddHours(afterInstall))
             {
                 Debug.Log("Reject: Hours after install");
                 return false;
             }
 
-            var minSessions = RateSettings.Instance.MinSessionCount;
+            var minSessions = settings.MinSessionCount;
             if (minSessions > 0 && SessionCount < minSessions)
             {
                 Debug.Log("Reject: Session Count");

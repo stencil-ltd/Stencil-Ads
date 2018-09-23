@@ -1,10 +1,10 @@
+using System;
 using UnityEngine;
-using Util;
 
 namespace Ratings
 {
-    [CreateAssetMenu(menuName = "Settings/Ratings")]
-    public class RateSettings : Singleton<RateSettings>
+    [Serializable]
+    public class RateSettings
     {
         [Header("App Settings")] 
         public int AppStoreId;
@@ -17,8 +17,6 @@ namespace Ratings
         public float HoursAfterPostpone = 72;
         
         public bool RequireInternetConnection => true;
-
-        public string RateUrl 
-            => StencilRateHelpers.GetStoreUrl(""+AppStoreId, PlayStoreId);
+        public string RateUrl => StencilRateHelpers.GetStoreUrl(""+AppStoreId, PlayStoreId);
     }
 }
