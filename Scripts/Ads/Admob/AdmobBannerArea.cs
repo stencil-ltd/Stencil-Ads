@@ -80,6 +80,10 @@ namespace Ads.Admob
                 MobileAds.SetiOSAppPauseOnBackground(true);
                 if (!StencilPremium.HasPremium) CreateBanner();
             }
+            else
+            {
+                SetupBannerCallbacks();
+            }
 
             if (_bannerFailed)
             {
@@ -94,23 +98,37 @@ namespace Ads.Admob
         private void OnDestroy()
         {
             StencilPremium.OnPremiumPurchased -= OnPurchase;
+            if (_banner != null)
+            {
+                _banner.OnAdLoaded -= OnBannerOnOnAdLoaded;
+                _banner.OnAdFailedToLoad -= OnBannerOnOnAdFailedToLoad;
+            }
         }
 
         private void CreateBanner()
         {
             _banner = new BannerView(_config, AdSize.SmartBanner, IsTop ? AdPosition.Top : AdPosition.Bottom);
-            _banner.OnAdLoaded += (sender, args) =>
-            {
-                if (!WillDisplayBanner)
-                    _banner.Hide();
-            };
-            _banner.OnAdFailedToLoad += (sender, args) =>
-            {
-                Debug.LogError($"Banner AdRequest Failed");
-                Tracking.Instance.Track("ad_failed", "type", "banner");
-                _bannerFailed = true;
-            };
+            SetupBannerCallbacks();
             LoadAd();
+        }
+
+        private void SetupBannerCallbacks()
+        {
+            if (_banner == null) return;
+            _banner.OnAdLoaded += OnBannerOnOnAdLoaded;
+            _banner.OnAdFailedToLoad += OnBannerOnOnAdFailedToLoad;
+        }
+
+        private void OnBannerOnOnAdFailedToLoad(object sender, AdFailedToLoadEventArgs args)
+        {
+            Debug.LogError($"Banner AdRequest Failed");
+            Tracking.Instance.Track("ad_failed", "type", "banner");
+            _bannerFailed = true;
+        }
+
+        private void OnBannerOnOnAdLoaded(object sender, EventArgs args)
+        {
+            if (!WillDisplayBanner) _banner.Hide();
         }
 
         private static void LoadAd()
