@@ -1,6 +1,7 @@
 using System;
 using UI;
 using UnityEngine;
+using Util;
 
 namespace Ratings
 {
@@ -18,6 +19,14 @@ namespace Ratings
             Rater.OnNever.AddListener(OnNever);
             Rater.OnPositive.AddListener(OnPositive);
             Rater.OnNegative.AddListener(OnNegative);
+            Settings.BindRemoteConfig();
+            Init.GameInit.OnRemoteConfig += OnRemoteConfig;
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            Init.GameInit.OnRemoteConfig -= OnRemoteConfig;
         }
 
         private void OnEnable()
@@ -45,6 +54,11 @@ namespace Ratings
         {
             StencilRateHelpers.MarkShown();
             Rater.gameObject.SetActive(true);
+        }
+
+        private void OnRemoteConfig(object sender, EventArgs e)
+        {
+            Settings.BindRemoteConfig();
         }
 
         private void OnPositive(int arg0)

@@ -1,4 +1,5 @@
 using System;
+using Binding;
 using UnityEngine;
 
 namespace Ratings
@@ -11,9 +12,16 @@ namespace Ratings
         public string PlayStoreId => Application.identifier;
         
         [Header("Timings")]
+        [RemoteField("rate_min_sessions")]
         public int MinSessionCount = 5;
+        
+        [RemoteField("rate_post_install")]
         public float HoursAfterInstall = 24f;
+        
+        [RemoteField("rate_post_launch")]
         public float HoursAfterLaunch = 0.1f;
+        
+        [RemoteField("rate_post_cancel")]
         public float HoursAfterPostpone = 72;
         
         public bool RequireInternetConnection => true;
