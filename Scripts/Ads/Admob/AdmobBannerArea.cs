@@ -15,9 +15,9 @@ namespace Ads.Admob
 {    
     public class AdmobBannerArea : Controller<AdmobBannerArea>
     {   
-#if STENCIL_ADMOB
-        
         public static event EventHandler OnChange;
+        
+#if STENCIL_ADMOB
 
         [CanBeNull] private static BannerView _banner;
         private static BannerConfiguration _config;
@@ -157,8 +157,9 @@ namespace Ads.Admob
             OnChange?.Invoke();
         }
 #else
-        public static bool WillDisplayBanner
-            => false;
+        public static bool IsTop;
+        public static float BannerHeight = 0f;
+        public static bool WillDisplayBanner => false;
 
         public static void SetBannerVisible(bool visible)
         {
