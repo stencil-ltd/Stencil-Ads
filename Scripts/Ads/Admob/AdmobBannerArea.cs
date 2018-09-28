@@ -6,6 +6,7 @@ using Plugins.UI;
 using UI;
 using UnityEngine;
 using UnityEngine.Events;
+using Util;
 #if STENCIL_ADMOB
 using GoogleMobileAds.Api;
 #endif
@@ -14,12 +15,9 @@ namespace Ads.Admob
 {    
     public class AdmobBannerArea : Controller<AdmobBannerArea>
     {   
-        [Serializable]
-        public class BannerEvent : UnityEvent
-        {}
 #if STENCIL_ADMOB
         
-        public static BannerEvent OnChange;
+        public static event EventHandler OnChange;
 
         [CanBeNull] private static BannerView _banner;
         private static BannerConfiguration _config;
@@ -27,7 +25,6 @@ namespace Ads.Admob
         
         private static bool _visible;
 
-        public bool IsTop;
         public RectTransform Content => Frame.Instance.Contents;
         public RectTransform Scrim => Frame.Instance.Scrim;
 
@@ -43,6 +40,7 @@ namespace Ads.Admob
                 return _banner.GetHeightInPixels();
             }
         }
+        public static bool IsTop;
 
         public static bool WillDisplayBanner
             => _visible && HasBanner && !StencilPremium.HasPremium;
@@ -153,7 +151,9 @@ namespace Ads.Admob
 
         private void Change()
         {
-            Frame.Instance?.SetBannerHeight(BannerHeight, IsTop);
+            var frame = Frame.Instance;
+            if (frame && !frame.AutoAdZone)
+                Frame.Instance?.SetBannerHeight(BannerHeight, IsTop);
             OnChange?.Invoke();
         }
 #else
