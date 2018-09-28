@@ -20,12 +20,17 @@ namespace Ratings
             Rater.OnPositive.AddListener(OnPositive);
             Rater.OnNegative.AddListener(OnNegative);
             Settings.BindRemoteConfig();
+        }
+
+        public override void Register()
+        {
+            base.Register();
             Init.GameInit.OnRemoteConfig += OnRemoteConfig;
         }
 
-        protected override void OnDestroy()
+        public override void WillUnregister()
         {
-            base.OnDestroy();
+            base.WillUnregister();
             Init.GameInit.OnRemoteConfig -= OnRemoteConfig;
         }
 
