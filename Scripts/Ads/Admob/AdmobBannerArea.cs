@@ -6,6 +6,7 @@ using Plugins.UI;
 using UI;
 using UnityEngine;
 using UnityEngine.Events;
+using Util;
 #if STENCIL_ADMOB
 using GoogleMobileAds.Api;
 #endif
@@ -14,12 +15,9 @@ namespace Ads.Admob
 {    
     public class AdmobBannerArea : Controller<AdmobBannerArea>
     {   
-        [Serializable]
-        public class BannerEvent : UnityEvent
-        {}
-#if STENCIL_ADMOB
+        public static event EventHandler OnChange;
         
-        public static BannerEvent OnChange;
+#if STENCIL_ADMOB
 
         [CanBeNull] private static BannerView _banner;
         private static BannerConfiguration _config;
@@ -27,7 +25,6 @@ namespace Ads.Admob
         
         private static bool _visible;
 
-        public bool IsTop;
         public RectTransform Content => Frame.Instance.Contents;
         public RectTransform Scrim => Frame.Instance.Scrim;
 
@@ -43,6 +40,7 @@ namespace Ads.Admob
                 return _banner.GetHeightInPixels();
             }
         }
+        public static bool IsTop;
 
         public static bool WillDisplayBanner
             => _visible && HasBanner && !StencilPremium.HasPremium;
@@ -80,6 +78,10 @@ namespace Ads.Admob
                 MobileAds.SetiOSAppPauseOnBackground(true);
                 if (!StencilPremium.HasPremium) CreateBanner();
             }
+            else
+            {
+                SetupBannerCallbacks();
+            }
 
             if (_bannerFailed)
             {
@@ -94,23 +96,37 @@ namespace Ads.Admob
         private void OnDestroy()
         {
             StencilPremium.OnPremiumPurchased -= OnPurchase;
+            if (_banner != null)
+            {
+                _banner.OnAdLoaded -= OnBannerOnOnAdLoaded;
+                _banner.OnAdFailedToLoad -= OnBannerOnOnAdFailedToLoad;
+            }
         }
 
         private void CreateBanner()
         {
             _banner = new BannerView(_config, AdSize.SmartBanner, IsTop ? AdPosition.Top : AdPosition.Bottom);
-            _banner.OnAdLoaded += (sender, args) =>
-            {
-                if (!WillDisplayBanner)
-                    _banner.Hide();
-            };
-            _banner.OnAdFailedToLoad += (sender, args) =>
-            {
-                Debug.LogError($"Banner AdRequest Failed");
-                Tracking.Instance.Track("ad_failed", "type", "banner");
-                _bannerFailed = true;
-            };
+            SetupBannerCallbacks();
             LoadAd();
+        }
+
+        private void SetupBannerCallbacks()
+        {
+            if (_banner == null) return;
+            _banner.OnAdLoaded += OnBannerOnOnAdLoaded;
+            _banner.OnAdFailedToLoad += OnBannerOnOnAdFailedToLoad;
+        }
+
+        private void OnBannerOnOnAdFailedToLoad(object sender, AdFailedToLoadEventArgs args)
+        {
+            Debug.LogError($"Banner AdRequest Failed");
+            Tracking.Instance.Track("ad_failed", "type", "banner");
+            _bannerFailed = true;
+        }
+
+        private void OnBannerOnOnAdLoaded(object sender, EventArgs args)
+        {
+            if (!WillDisplayBanner) _banner.Hide();
         }
 
         private static void LoadAd()
@@ -135,12 +151,15 @@ namespace Ads.Admob
 
         private void Change()
         {
-            Frame.Instance?.SetBannerHeight(BannerHeight, IsTop);
+            var frame = Frame.Instance;
+            if (frame && !frame.AutoAdZone)
+                Frame.Instance?.SetBannerHeight(BannerHeight, IsTop);
             OnChange?.Invoke();
         }
 #else
-        public static bool WillDisplayBanner
-            => false;
+        public static bool IsTop;
+        public static float BannerHeight = 0f;
+        public static bool WillDisplayBanner => false;
 
         public static void SetBannerVisible(bool visible)
         {
