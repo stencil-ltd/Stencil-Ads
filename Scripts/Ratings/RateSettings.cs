@@ -7,8 +7,10 @@ namespace Ratings
     [Serializable]
     public class RateSettings
     {
-        [Header("App Settings")] 
+        [Header("App Settings")]
+        [RemoteField("rate_app_store_id")]
         public int AppStoreId;
+        
         public string PlayStoreId => Application.identifier;
         
         [Header("Timings")]
