@@ -26,13 +26,13 @@ namespace Ratings
         public override void Register()
         {
             base.Register();
-            Init.GameInit.OnRemoteConfig += OnRemoteConfig;
+            StencilRemote.OnRemoteConfig += OnRemoteConfig;
         }
 
         public override void WillUnregister()
         {
             base.WillUnregister();
-            Init.GameInit.OnRemoteConfig -= OnRemoteConfig;
+            StencilRemote.OnRemoteConfig -= OnRemoteConfig;
         }
 
         private void OnEnable()
