@@ -102,6 +102,7 @@ namespace Ads.Admob
         private void CreateBanner()
         {
             Debug.Log("Create Banner");
+            if (_banner != null) Debug.LogError("Duplicate banner detected");
             _banner = new BannerView(_config, AdSize.SmartBanner, IsTop ? AdPosition.Top : AdPosition.Bottom);
             SetupBannerCallbacks();
             LoadAd();

@@ -19,6 +19,7 @@ namespace Ads
 
         public bool HasError { get; private set; }
         public bool IsLoading { get; private set; }
+        public bool IsShowing { get; private set; }
 
         public VideoAd(PlatformValue<string> unitId)
         {
@@ -39,13 +40,18 @@ namespace Ads
 
         private IEnumerator _OnClose()
         {
+            IsShowing = false;
             yield return null;
             Load();
         }
 
         public bool Show()
         {
-            if (!IsReady) return false;
+            if (!IsReady)
+            {
+                Debug.LogWarning("Video ad not ready. Returning.");
+                return false;
+            }
             
             if (Application.isEditor && !SupportsEditor)
             {
@@ -58,7 +64,8 @@ namespace Ads
                 Objects.StartCoroutine(FakeShow(false));
                 return true;
             }
-            
+
+            IsShowing = true;
             ShowInternal();
             return true;
         }
@@ -111,6 +118,7 @@ namespace Ads
 
         private IEnumerator HandleError(EventArgs args)
         {
+            IsShowing = false;
             Tracking.Instance.Track("ad_failed", "type", GetType().Name);
             yield return null;
         }
