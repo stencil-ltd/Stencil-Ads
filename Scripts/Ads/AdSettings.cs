@@ -44,6 +44,7 @@ namespace Ads
         }
         #endif
 
+        public bool BannerAtTop;
         public bool IgnoreTestIds;
         public bool IgnorePremium;
         

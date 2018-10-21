@@ -40,7 +40,8 @@ namespace Ads.Admob
                 return _banner.GetHeightInPixels();
             }
         }
-        public static bool IsTop;
+
+        public static bool IsTop => AdSettings.Instance.BannerAtTop;
 
         public static bool WillDisplayBanner
             => _visible && HasBanner && !StencilPremium.HasPremium;

@@ -115,11 +115,11 @@ namespace Ads
             yield return null;
         }
 
-        private IEnumerator FakeShow(bool delay)
+        private IEnumerator FakeShow(bool editor)
         {
-            Debug.LogWarning("Ad doesn't support editor. Completing!");
-            if (delay)
-                yield return new WaitForSeconds(0.3f);
+            var str = editor ? "editor" : "premium";
+            Debug.LogWarning($"Ad doesn't support {str}. Completing!");
+            if (editor) yield return new WaitForSeconds(0.3f);
             NotifyComplete();
         }
 
