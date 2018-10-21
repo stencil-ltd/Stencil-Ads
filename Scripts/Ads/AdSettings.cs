@@ -24,7 +24,8 @@ namespace Ads
             "D50D9F51E331521E6AED71AA95834F1D",
             "BE68C06901E98BF1F8C126AD343CD229",
             "2d9c4c646686985dbf30017b0898acfd",
-            "0adb23a59f47cfc5c62996ecd26e1f6a12"
+            "0adb23a59f47cfc5c62996ecd26e1f6a12",
+            "9E1318CB77013036D10A5DA41CC268A5" // Aaron Pixel 2XL (10/18)
         };
         
         #if STENCIL_ADMOB
