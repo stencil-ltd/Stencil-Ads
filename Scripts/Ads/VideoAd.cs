@@ -43,21 +43,24 @@ namespace Ads
             Load();
         }
 
-        public void Show()
+        public bool Show()
         {
+            if (!IsReady) return false;
+            
             if (Application.isEditor && !SupportsEditor)
             {
                 Objects.StartCoroutine(FakeShow(true));
-                return;
+                return true;
             }
 
             if (StencilPremium.HasPremium && !ShowInPremium)
             {
                 Objects.StartCoroutine(FakeShow(false));
-                return;
+                return true;
             }
             
             ShowInternal();
+            return true;
         }
 
         public virtual bool SupportsEditor => true;
