@@ -45,12 +45,6 @@ namespace Ads.Admob
 
         public static bool WillDisplayBanner
             => _visible && HasBanner && !StencilPremium.HasPremium;
-
-        public static void SetBannerVisible(bool visible)
-        {
-            if (visible) ShowBanner(); 
-            else HideBanner();
-        }
         
         public static void ShowBanner()
         {
@@ -77,7 +71,8 @@ namespace Ads.Admob
                 _config = AdSettings.Instance.BannerConfiguration;
                 MobileAds.Initialize(AdSettings.Instance.AppConfiguration);
                 MobileAds.SetiOSAppPauseOnBackground(true);
-                if (!StencilPremium.HasPremium) CreateBanner();
+                if (!StencilPremium.HasPremium)
+                    CreateBanner();
             }
             else
             {
@@ -106,9 +101,11 @@ namespace Ads.Admob
 
         private void CreateBanner()
         {
+            Debug.Log("Create Banner");
             _banner = new BannerView(_config, AdSize.SmartBanner, IsTop ? AdPosition.Top : AdPosition.Bottom);
             SetupBannerCallbacks();
             LoadAd();
+            if (_visible) ShowBanner(); else HideBanner();
         }
 
         private void SetupBannerCallbacks()
