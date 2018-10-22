@@ -1,7 +1,6 @@
 ﻿using System;
 using Binding;
 using JetBrains.Annotations;
-using Plugins.UI;
 using Purchasing;
 using UI;
 using UnityEngine;
@@ -20,6 +19,8 @@ namespace Ads.Ui
         public IAPButton Button;
         [CanBeNull] public Func<bool> CanShowPremium;
 
+        public event EventHandler<Product> OnPurchasePremium;
+
         private static IAPListener _listener;
 
         private Product _product;
@@ -31,6 +32,7 @@ namespace Ads.Ui
             Button.gameObject.SetActive(false);
             if (!_listener)
             {
+                // IAPListener will call DontDestroyOnLoad
                 _listener = new GameObject("Premium Listener").AddComponent<IAPListener>();
                 _listener.consumePurchase = false;
                 _listener.onPurchaseComplete = new IAPListener.OnPurchaseCompletedEvent();
@@ -55,7 +57,8 @@ namespace Ads.Ui
 
         public void OnProduct(Product product)
         {
-            RegisterPurchase(product);
+            if (RegisterPurchase(product))
+                OnPurchasePremium?.Invoke(this, product);
         }
 
         private bool RegisterPurchase(Product product)
