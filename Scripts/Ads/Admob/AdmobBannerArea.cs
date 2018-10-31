@@ -37,7 +37,7 @@ namespace Ads.Admob
                     return 0f;
                 if (Application.isEditor)
                     return 150f;
-                return _banner.GetHeightInPixels();
+                return _banner?.GetHeightInPixels() ?? 0;
             }
         }
 
