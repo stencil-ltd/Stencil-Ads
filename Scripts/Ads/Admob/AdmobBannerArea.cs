@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Ads.Ui;
 using Analytics;
 using JetBrains.Annotations;
@@ -18,15 +19,13 @@ namespace Ads.Admob
         public static event EventHandler OnChange;
         
 #if STENCIL_ADMOB
+        public bool ApplyAndroidHack = true;
 
         [CanBeNull] private static BannerView _banner;
         private static BannerConfiguration _config;
         private static bool _bannerFailed;
         
         private static bool _visible;
-
-        public RectTransform Content => Frame.Instance.Contents;
-        public RectTransform Scrim => Frame.Instance.Scrim;
 
         private static bool HasBanner => Application.isEditor || _banner != null;
         public static float BannerHeight
@@ -98,6 +97,15 @@ namespace Ads.Admob
                 _banner.OnAdFailedToLoad -= OnBannerOnOnAdFailedToLoad;
             }
         }
+
+        #if UNITY_ANDROID
+        private void OnApplicationPause(bool pauseStatus)
+        {
+            if (!_visible || !IsTop) return;
+            if (pauseStatus) HideBanner();
+            else Invoke(nameof(ShowBanner), 1f);
+        }
+        #endif
 
         private void CreateBanner()
         {
