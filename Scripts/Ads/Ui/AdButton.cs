@@ -29,12 +29,12 @@ namespace Ads.Ui
 
         private void OnEnable()
         {
-            _ad.CheckReload();
+            _ad?.CheckReload();
         }
 
         private void Update()
         {
-            _button.enabled = _ad.IsReady;
+            _button.enabled = _ad?.IsReady ?? false;
             _cg.alpha = _button.enabled ? 1f : 0.3f;
         }
     }
