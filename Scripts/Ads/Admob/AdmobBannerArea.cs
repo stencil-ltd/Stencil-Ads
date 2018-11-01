@@ -101,7 +101,7 @@ namespace Ads.Admob
         #if UNITY_ANDROID
         private void OnApplicationPause(bool pauseStatus)
         {
-            if (!_visible || !IsTop) return;
+            if (!_visible || !IsTop || !ApplyAndroidHack) return;
             if (pauseStatus) HideBanner();
             else Invoke(nameof(ShowBanner), 1f);
         }
