@@ -1,20 +1,23 @@
 using System;
+using Scripts.RemoteConfig;
 using UnityEngine;
 using Util;
+using Developers = Dev.Developers;
 
 namespace Ads.Ui
 {
     public static class StencilPremium
     {
+        public static bool IgnorePremium 
+            => StencilRemote.IsDeveloper() && AdSettings.Instance.IgnorePremium;
+        
         public static bool HasPremium
         {
             get
             {
                 var force = PremiumToggle.ForceEnabled;
-                if (force != null) 
-                    return force.Value;
-                if (AdSettings.Instance.IgnorePremium)
-                    return false;
+                if (force != null) return force.Value;
+                if (IgnorePremium) return false;
                 return PlayerPrefsX.GetBool("stencil_premium");
             }
             private set

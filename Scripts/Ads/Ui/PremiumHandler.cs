@@ -80,27 +80,50 @@ namespace Ads.Ui
         private bool _purchased;
         private bool _CanShowPremium()
         {
-            if (StencilPremium.HasPremium)
-                return false;
+            Debug.Log("Show Premium: Check");
+            if (StencilPremium.IgnorePremium)
+            {
+                var ret = CanShowPremium?.Invoke() != false;
+                Debug.Log($"Show Premium: {ret} [ignore + custom predicate or null]");
+                return ret;
+            }
             
-            if (!StencilIap.IsReady()) 
+            if (StencilPremium.HasPremium)
+            {
+                Debug.Log("Show Premium: false [already bought]");
                 return false;
+            }
+
+            if (!StencilIap.IsReady())
+            {
+                Debug.Log("Show Premium: false [not ready]");
+                return false;
+            }
             
             if (_product == null)
                 _product = Button.GetProduct();
-            
+
             if (_product == null)
+            {
+                Debug.Log("Show Premium: false [product error]");
                 return false;
+            }
 
             if (!_product.hasReceipt)
-                return CanShowPremium?.Invoke() != false;
+            {
+                var ret = CanShowPremium?.Invoke() != false;
+                Debug.Log($"Show Premium: {ret} [custom predicate or null]");
+                return ret;
+            }
 
             if (!_purchased)
             {
                 _purchased = true;
-                Debug.Log("Receipt found for premium.");
+                Debug.Log("Show Premium: Receipt found for premium.");
                 StencilPremium.Purchase();
             }
+            
+            Debug.Log("Show Premium: false [fallthrough]");
             return false;
         }
 
