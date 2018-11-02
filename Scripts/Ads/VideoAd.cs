@@ -152,7 +152,9 @@ namespace Ads
 
         public void EmergencyReset()
         {
-            Tracking.Instance.Track("ad_reset_problem", "type", GetType().Name);
+            var type = GetType().Name;
+            Tracking.Instance.Track("ad_reset_problem", "type", type);
+            Tracking.Report("ad_reset_problem", $"Had to reset {type}");
             NotifyClose();
             if (!IsReady) Load();
         }
