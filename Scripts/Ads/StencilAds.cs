@@ -25,6 +25,7 @@ namespace Ads
         }
 
         private static bool _init;
+        public static bool HasInit => _init;
 
         public static void Init()
         {
@@ -46,7 +47,7 @@ namespace Ads
 #endif
             Debug.Log("StencilAds initialized");
         }
-
+        
         public static VideoAd GetAdByType(AdType type)
         {
             switch (type)

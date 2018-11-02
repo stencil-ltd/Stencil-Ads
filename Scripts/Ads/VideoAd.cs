@@ -27,9 +27,9 @@ namespace Ads
         {
             get
             {
+                if (IsShowing) return VideoAdState.Showing;
                 if (HasError) return VideoAdState.Error;
                 if (IsLoading) return VideoAdState.Loading;
-                if (IsShowing) return VideoAdState.Showing;
                 return VideoAdState.None;
             }
         }
@@ -43,7 +43,6 @@ namespace Ads
         {
             Load();
             OnClose += (sender, args) => Objects.StartCoroutine(_OnClose());
-            OnError += (sender, args) => Objects.StartCoroutine(HandleError(args));
         }
 
         public void Refresh()
@@ -115,14 +114,17 @@ namespace Ads
 
         protected void NotifyError()
         {
+            IsShowing = false;
             IsLoading = false;
             HasError = true;
+            Tracking.Instance.Track("ad_failed", "type", GetType().Name);
             OnError?.Invoke();
             OnState?.Invoke(this, State);
         }
 
         protected void NotifyComplete()
         {
+            IsShowing = false;
             OnComplete?.Invoke();
             OnResult?.Invoke(null, true);
             OnState?.Invoke(this, State);
@@ -130,23 +132,19 @@ namespace Ads
 
         protected void NotifyClose()
         {
+            IsShowing = false;
             OnClose?.Invoke();
             OnResult?.Invoke(null, false);
             OnState?.Invoke(this, State);
-        }
-
-        private IEnumerator HandleError(EventArgs args)
-        {
-            IsShowing = false;
-            Tracking.Instance.Track("ad_failed", "type", GetType().Name);
-            yield return null;
         }
 
         private IEnumerator FakeShow(bool editor)
         {
             var str = editor ? "editor" : "premium";
             Debug.LogWarning($"Ad doesn't support {str}. Completing!");
-            if (editor) yield return new WaitForSeconds(0.3f);
+            IsShowing = true;
+            OnState?.Invoke(this, State);
+            if (editor) yield return new WaitForSeconds(1f);
             NotifyComplete();
         }
 

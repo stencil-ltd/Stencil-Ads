@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Linq;
 using State.Active;
+using Util;
 
 namespace Ads.State
 {
@@ -13,10 +15,19 @@ namespace Ads.State
         public VideoAdState[] States;
 
         private VideoAd _ad;
-        private VideoAdState _state;
+        private VideoAdState _state = VideoAdState.None;
 
-        private void Awake()
+        public override void Register(ActiveManager manager)
         {
+            base.Register(manager);
+            Objects.StartCoroutine(Init());
+        }
+
+        private IEnumerator Init()
+        {
+            while (!StencilAds.HasInit)
+                yield return null;
+            
             switch (Type)
             {
                 case AdType.Interstitial:
@@ -27,7 +38,7 @@ namespace Ads.State
                     break;
             }
             
-            if (_ad == null) return;
+            if (_ad == null) yield break;
             _ad.OnState += OnState;
         }
 
@@ -39,7 +50,7 @@ namespace Ads.State
         private void OnState(object sender, VideoAdState e)
         {
             _state = e;
-            Check();
+            RequestCheck();
         }
 
         public override bool? Check()
