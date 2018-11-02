@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Security.Cryptography;
 using Ads.State;
 using Ads.Ui;
 using Analytics;
@@ -92,6 +93,7 @@ namespace Ads
 
         public void Load()
         {
+            HasError = false;
             IsLoading = true;
             OnState?.Invoke(this, State);
             LoadInternal();
@@ -144,9 +146,15 @@ namespace Ads
             Debug.LogWarning($"Ad doesn't support {str}. Completing!");
             IsShowing = true;
             OnState?.Invoke(this, State);
-            if (editor) yield return new WaitForSeconds(1f);
+            if (editor) yield return new WaitForSeconds(3f);
             NotifyComplete();
         }
 
+        public void EmergencyReset()
+        {
+            Tracking.Instance.Track("ad_reset_problem", "type", GetType().Name);
+            NotifyClose();
+            if (!IsReady) Load();
+        }
     }
 }

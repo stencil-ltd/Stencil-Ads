@@ -23,28 +23,30 @@ namespace Ads.State
             Objects.StartCoroutine(Init());
         }
 
-        private IEnumerator Init()
+        public override void Unregister()
         {
-            while (!StencilAds.HasInit)
-                yield return null;
-            
-            switch (Type)
-            {
-                case AdType.Interstitial:
-                    _ad = StencilAds.Interstitial;
-                    break;
-                case AdType.Rewarded:
-                    _ad = StencilAds.Rewarded;
-                    break;
-            }
-            
-            if (_ad == null) yield break;
-            _ad.OnState += OnState;
+            base.Unregister();
+            if (_ad != null) _ad.OnState -= OnState;
         }
 
-        private void OnDestroy()
+        private IEnumerator Init()
         {
-            if (_ad != null) _ad.OnState -= OnState;
+            for (;;)
+            {
+                switch (Type)
+                {
+                    case AdType.Interstitial:
+                        _ad = StencilAds.Interstitial;
+                        break;
+                    case AdType.Rewarded:
+                        _ad = StencilAds.Rewarded;
+                        break;
+                }
+                if (_ad != null)
+                    break;
+                yield return null;
+            }
+            _ad.OnState += OnState;
         }
 
         private void OnState(object sender, VideoAdState e)
