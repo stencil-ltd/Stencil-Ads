@@ -98,12 +98,31 @@ namespace Ads.Admob
             }
         }
 
+        private bool _needsResumeHack;
+
         #if UNITY_ANDROID
+        
         private void OnApplicationPause(bool pauseStatus)
         {
-            if (!_visible || !IsTop || !ApplyAndroidHack) return;
-            if (pauseStatus) HideBanner();
-            else Invoke(nameof(ShowBanner), 1f);
+            if (!IsTop || !ApplyAndroidHack) return;
+            if (pauseStatus && !_visible) return;
+            if (!pauseStatus && !_needsResumeHack) return;
+            if (pauseStatus)
+            {
+                _needsResumeHack = true;
+                HideBanner();
+            }
+            else
+            {
+                _needsResumeHack = false;
+                Objects.StartCoroutine(_FuckYou());
+            }
+        }
+
+        private IEnumerator _FuckYou()
+        {
+            yield return new WaitForSeconds(1f);
+            ShowBanner();
         }
         #endif
 
