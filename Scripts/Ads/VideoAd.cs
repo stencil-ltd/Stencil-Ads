@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Ads.State;
 using Ads.Ui;
 using Analytics;
 using UnityEngine;
@@ -16,10 +17,22 @@ namespace Ads
         public event EventHandler OnComplete;
         public event EventHandler OnClose; // these will be the same for some ad types.
         public event EventHandler<bool> OnResult; // single callback for close or rewarded.
+        public event EventHandler<VideoAdState> OnState;
 
         public bool HasError { get; private set; }
         public bool IsLoading { get; private set; }
         public bool IsShowing { get; private set; }
+
+        public VideoAdState State
+        {
+            get
+            {
+                if (HasError) return VideoAdState.Error;
+                if (IsLoading) return VideoAdState.Loading;
+                if (IsShowing) return VideoAdState.Showing;
+                return VideoAdState.None;
+            }
+        }
 
         public VideoAd(PlatformValue<string> unitId)
         {
@@ -66,6 +79,7 @@ namespace Ads
             }
 
             IsShowing = true;
+            OnState?.Invoke(this, State);
             ShowInternal();
             return true;
         }
@@ -80,6 +94,7 @@ namespace Ads
         public void Load()
         {
             IsLoading = true;
+            OnState?.Invoke(this, State);
             LoadInternal();
         }
         
@@ -95,6 +110,7 @@ namespace Ads
             IsLoading = false;
             HasError = false;
             OnLoaded?.Invoke();
+            OnState?.Invoke(this, State);
         }
 
         protected void NotifyError()
@@ -102,18 +118,21 @@ namespace Ads
             IsLoading = false;
             HasError = true;
             OnError?.Invoke();
+            OnState?.Invoke(this, State);
         }
 
         protected void NotifyComplete()
         {
             OnComplete?.Invoke();
             OnResult?.Invoke(null, true);
+            OnState?.Invoke(this, State);
         }
 
         protected void NotifyClose()
         {
             OnClose?.Invoke();
             OnResult?.Invoke(null, false);
+            OnState?.Invoke(this, State);
         }
 
         private IEnumerator HandleError(EventArgs args)
