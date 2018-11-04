@@ -34,8 +34,8 @@ namespace Ads
             _init = true;
 
 #if UNITY_IPHONE && !UNITY_EDITOR
-            Debug.Log("StencilAds disabled webview JIT.");
-            SetEnv.Set("JSC_useJIT", "false");
+//            Debug.Log("StencilAds disabled webview JIT.");
+//            SetEnv.Set("JSC_useJIT", "false");
 #endif
 
 #if STENCIL_ADMOB
