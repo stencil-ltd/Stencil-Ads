@@ -1,8 +1,10 @@
 ﻿using System;
 using JetBrains.Annotations;
+using Scripts.RemoteConfig;
 using UnityEngine;
 using UnityEngine.Advertisements;
 using Util;
+using Developers = Dev.Developers;
 #if STENCIL_ADMOB
 using Ads.Admob;
 using GoogleMobileAdsMediationTestSuite.Api;
@@ -62,7 +64,7 @@ namespace Ads
             var id = new PlatformValue<string>()
                 .WithIos("1661402")
                 .WithAndroid("1661401");
-            Advertisement.Initialize(id, true);
+            Advertisement.Initialize(id, StencilRemote.IsDeveloper());
 #endif
             Debug.Log("StencilAds initialized");
         }
