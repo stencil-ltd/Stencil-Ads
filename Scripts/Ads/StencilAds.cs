@@ -1,11 +1,15 @@
 ﻿using System;
-using Ads.UnityAds;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Advertisements;
-
+using Util;
 #if STENCIL_ADMOB
 using Ads.Admob;
 using GoogleMobileAdsMediationTestSuite.Api;
+#endif
+
+#if UNITY_ADS
+using Ads.UnityAds;
 #endif
 
 namespace Ads
@@ -21,6 +25,7 @@ namespace Ads
 
         public static VideoAd Interstitial { get; private set; }
         public static VideoAd Rewarded { get; private set; }
+        public static IBannerArea Banner { get; private set; }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         public static void OnSceneLoad()
@@ -54,8 +59,35 @@ namespace Ads
             Interstitial.Init();
             Rewarded = UnityVideoAd.Rewarded;
             Rewarded.Init();   
+            var id = new PlatformValue<string>()
+                .WithIos("1661402")
+                .WithAndroid("1661401");
+            Advertisement.Initialize(id, true);
 #endif
             Debug.Log("StencilAds initialized");
+        }
+
+        public static event EventHandler OnBannerChange;
+        public static float BannerHeight => Banner?.BannerHeight ?? 0f;
+        public static bool BannerNeedsScale = false;
+
+        public static void ShowBanner()
+        {
+            Banner?.BannerShow();
+        }
+
+        public static void HideBanner()
+        {
+            Banner?.BannerHide();
+        }
+
+        public static void SetBannerAdapter([CanBeNull] IBannerArea banner)
+        {
+            if (Banner != null)
+                Banner.OnBannerChange -= OnBannerChange;
+            Banner = banner;
+            if (Banner != null)
+                Banner.OnBannerChange += OnBannerChange;
         }
         
         public static VideoAd GetAdByType(AdType type)

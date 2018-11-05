@@ -48,6 +48,7 @@ namespace Ads
         public bool BannerAtTop;
         public bool IgnoreTestIds;
         public bool IgnorePremium;
+        public float CustomBannerHeight;
         
         public AdId AppId;
         public AppIdConfiguration AppConfiguration { get; private set; }        
