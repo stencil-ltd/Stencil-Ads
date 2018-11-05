@@ -1,5 +1,7 @@
 ﻿using System;
+using Ads.UnityAds;
 using UnityEngine;
+using UnityEngine.Advertisements;
 
 #if STENCIL_ADMOB
 using Ads.Admob;
@@ -10,10 +12,12 @@ namespace Ads
 {
     public static class StencilAds
     {
+        #if STENCIL_ADMOB
         private static AdConfiguration _appId => AdSettings.Instance.AppConfiguration;
         private static AdConfiguration _banner => AdSettings.Instance.BannerConfiguration;
         private static AdConfiguration _interstitial => AdSettings.Instance.InterstitialConfiguration;
         private static AdConfiguration _rewarded => AdSettings.Instance.RewardConfiguration;
+        #endif
 
         public static VideoAd Interstitial { get; private set; }
         public static VideoAd Rewarded { get; private set; }
@@ -43,7 +47,13 @@ namespace Ads
             Interstitial = new AdmobInterstitial(_interstitial);
             Interstitial.Init();
             Rewarded = new AdmobRewarded(_rewarded);
-            Rewarded.Init();
+            Rewarded.Init();    
+#elif UNITY_ADS
+            Debug.Log("StencilAds (unity) initializing");
+            Interstitial = UnityVideoAd.Interstitial;
+            Interstitial.Init();
+            Rewarded = UnityVideoAd.Rewarded;
+            Rewarded.Init();   
 #endif
             Debug.Log("StencilAds initialized");
         }
