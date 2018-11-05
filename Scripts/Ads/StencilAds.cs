@@ -69,7 +69,7 @@ namespace Ads
 
         public static event EventHandler OnBannerChange;
         public static float BannerHeight => Banner?.BannerHeight ?? 0f;
-        public static bool BannerNeedsScale = false;
+        public static bool BannerNeedsScale = true;
 
         public static void ShowBanner()
         {

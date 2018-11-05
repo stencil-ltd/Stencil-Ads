@@ -1,6 +1,7 @@
 #if UNITY_ADS
 
 using System;
+using UnityEngine;
 using UnityEngine.Advertisements;
 using Util;
 
@@ -26,6 +27,7 @@ namespace Ads.UnityAds
             var options = new ShowOptions();
             options.resultCallback = result =>
             {
+                Debug.Log($"Unity Ads received callback: {result}");
                 switch (result)
                 {
                     case ShowResult.Failed:
@@ -39,7 +41,7 @@ namespace Ads.UnityAds
                         throw new ArgumentOutOfRangeException(nameof(result), result, null);
                 }
             };
-            Advertisement.Show(UnitId);
+            Advertisement.Show(UnitId, options);
         }
 
         protected override void LoadInternal()
