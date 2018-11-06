@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using Ads.Ui;
 using Plugins.UI;
+using Scripts.RemoteConfig;
 using UI;
 using UnityEngine;
 using UnityEngine.Advertisements;
@@ -13,20 +14,24 @@ namespace Ads.UnityAds
     {   
         public event EventHandler OnBannerChange;
         
-        private static bool _bannerFailed;
-        public float BannerHeight => AdSettings.Instance.CustomBannerHeight;
+        private static bool _visible;
+        
+        public static bool WillDisplayBanner => _visible && !StencilPremium.HasPremium;
+        public float BannerHeight => WillDisplayBanner ? AdSettings.Instance.CustomBannerHeight : 0f;
 
         public static bool IsTop => false;//AdSettings.Instance.BannerAtTop;
         
         public void BannerShow()
         {
             Debug.Log("Show Banner");
+            _visible = true;
             StartCoroutine(TryShow());
         }
 
         public void BannerHide()
         {
             Debug.Log("Hide Banner");
+            _visible = false;
             Advertisement.Banner.Hide();
         }
 
@@ -42,7 +47,6 @@ namespace Ads.UnityAds
             StencilAds.SetBannerAdapter(null);
         }
 
-        private static bool _hasBanner;
         private void Start()
         {            
             Change();
@@ -58,9 +62,12 @@ namespace Ads.UnityAds
         {
             if (StencilPremium.HasPremium)
             {
-                _hasBanner = false;
+                _visible = false;
                 Advertisement.Banner.Hide(true);
             }
+            else if (!StencilRemote.IsProd())
+                BannerShow();
+
             Change();
         }
 

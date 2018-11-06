@@ -86,12 +86,17 @@ namespace Ads
         public static void SetBannerAdapter([CanBeNull] IBannerArea banner)
         {
             if (Banner != null)
-                Banner.OnBannerChange -= OnBannerChange;
+                Banner.OnBannerChange -= _OnBannerChange;
             Banner = banner;
-            if (Banner != null)
-                Banner.OnBannerChange += OnBannerChange;
+            if (banner != null)
+                banner.OnBannerChange += _OnBannerChange;
         }
-        
+
+        private static void _OnBannerChange(object sender, EventArgs e)
+        {
+            OnBannerChange?.Invoke();
+        }
+
         public static VideoAd GetAdByType(AdType type)
         {
             switch (type)
