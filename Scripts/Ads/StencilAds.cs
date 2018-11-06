@@ -64,7 +64,7 @@ namespace Ads
             var id = new PlatformValue<string>()
                 .WithIos("1661402")
                 .WithAndroid("1661401");
-            Advertisement.Initialize(id, StencilRemote.IsDeveloper());
+            Advertisement.Initialize(id, Developers.Enabled);
 #endif
             Debug.Log("StencilAds initialized");
         }
