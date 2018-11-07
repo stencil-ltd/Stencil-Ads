@@ -16,7 +16,7 @@ namespace Ads.UnityAds
         
         private static bool _visible;
         
-        public static bool WillDisplayBanner => _visible && !StencilPremium.HasPremium;
+        public static bool WillDisplayBanner => _visible;
         public float BannerHeight => WillDisplayBanner ? AdSettings.Instance.CustomBannerHeight : 0f;
 
         public static bool IsTop => false;//AdSettings.Instance.BannerAtTop;
@@ -33,6 +33,7 @@ namespace Ads.UnityAds
             Debug.Log("Hide Banner");
             _visible = false;
             Advertisement.Banner.Hide();
+            BannerChange();
         }
 
         public override void Register()
@@ -49,26 +50,7 @@ namespace Ads.UnityAds
 
         private void Start()
         {            
-            Change();
-            StencilPremium.OnPremiumPurchased += OnPurchase;
-        }
-
-        private void OnDestroy()
-        {
-            StencilPremium.OnPremiumPurchased -= OnPurchase;
-        }
-
-        private void OnPurchase(object sender, EventArgs e)
-        {
-            if (StencilPremium.HasPremium)
-            {
-                _visible = false;
-                Advertisement.Banner.Hide(true);
-            }
-            else if (!StencilRemote.IsProd())
-                BannerShow();
-
-            Change();
+            BannerChange();
         }
 
         private IEnumerator TryShow()
@@ -76,10 +58,10 @@ namespace Ads.UnityAds
             while (!Advertisement.IsReady("banner"))
                 yield return new WaitForSeconds(0.5f);
             Advertisement.Banner.Show("banner");
-            Instance?.Change();
+            BannerChange();
         }
-        
-        private void Change()
+
+        private void BannerChange()
         {
             var frame = Frame.Instance;
             if (frame && !frame.AutoAdZone)

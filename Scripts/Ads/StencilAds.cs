@@ -1,4 +1,5 @@
 ﻿using System;
+using Ads.Ui;
 using JetBrains.Annotations;
 using Scripts.RemoteConfig;
 using UnityEngine;
@@ -67,14 +68,25 @@ namespace Ads
             Advertisement.Initialize(id, Developers.Enabled);
 #endif
             Debug.Log("StencilAds initialized");
+
+            StencilPremium.OnPremiumPurchased += OnPremium;
         }
 
         public static event EventHandler OnBannerChange;
         public static float BannerHeight => Banner?.BannerHeight ?? 0f;
         public static bool BannerNeedsScale = true;
 
+        private static void OnPremium(object sender, EventArgs e)
+        {
+            if (StencilPremium.HasPremium)
+                HideBanner();
+            else if (!StencilRemote.IsProd())
+                ShowBanner();
+        }
+        
         public static void ShowBanner()
         {
+            if (StencilPremium.HasPremium) return;
             Banner?.BannerShow();
         }
 
