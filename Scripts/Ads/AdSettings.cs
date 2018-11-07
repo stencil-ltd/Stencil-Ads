@@ -49,6 +49,7 @@ namespace Ads
         public bool IgnoreTestIds;
         public bool IgnorePremium;
         public float CustomBannerHeight;
+        public float NudgeBottomSafeZone = 52f;
         
         public AdId AppId;
         public AppIdConfiguration AppConfiguration { get; private set; }        
