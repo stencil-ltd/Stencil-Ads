@@ -62,10 +62,7 @@ namespace Ads
             Interstitial.Init();
             Rewarded = UnityVideoAd.Rewarded;
             Rewarded.Init();   
-            var id = new PlatformValue<string>()
-                .WithIos("1661402")
-                .WithAndroid("1661401");
-            Advertisement.Initialize(id, Developers.Enabled);
+            Advertisement.Initialize(AdSettings.Instance.UnityConfiguration, Developers.Enabled);
 #endif
             Debug.Log("StencilAds initialized");
 
