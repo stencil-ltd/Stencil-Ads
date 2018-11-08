@@ -1,3 +1,4 @@
+#if STENCIL_ADMOB
 using System;
 using System.Collections;
 using Ads.Ui;
@@ -8,9 +9,7 @@ using UI;
 using UnityEngine;
 using UnityEngine.Events;
 using Util;
-#if STENCIL_ADMOB
 using GoogleMobileAds.Api;
-#endif
 
 namespace Ads.Admob
 {    
@@ -18,7 +17,6 @@ namespace Ads.Admob
     {   
         public static event EventHandler OnChange;
         
-#if STENCIL_ADMOB
         public bool ApplyAndroidHack = true;
 
         [CanBeNull] private static BannerView _banner;
@@ -182,26 +180,6 @@ namespace Ads.Admob
                 Frame.Instance?.SetBannerHeight(BannerHeight, IsTop);
             OnChange?.Invoke();
         }
-#else
-        public static bool IsTop;
-        public static float BannerHeight = 0f;
-        public static bool WillDisplayBanner => false;
-
-        public static void SetBannerVisible(bool visible)
-        {
-            if (visible) ShowBanner(); 
-            else HideBanner();
-        }
-        
-        public static void ShowBanner()
-        {
-            Debug.Log("Show Banner");
-        }
-
-        public static void HideBanner()
-        {
-            Debug.Log("Hide Banner");
-        }
-#endif
     }
 }
+#endif
