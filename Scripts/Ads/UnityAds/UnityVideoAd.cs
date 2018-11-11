@@ -11,11 +11,15 @@ namespace Ads.UnityAds
     {
         private bool _showInPremium;
         
-        public static UnityVideoAd Rewarded => new UnityVideoAd("rewardedVideo", true);
-        public static UnityVideoAd Interstitial => new UnityVideoAd("video", false);
-        
-        public UnityVideoAd(string placement, bool showInPremium) : base(new PlatformValue<string>(placement))
+        public static UnityVideoAd Rewarded => new UnityVideoAd("rewardedVideo", true, AdType.Rewarded);
+        public static UnityVideoAd Interstitial => new UnityVideoAd("video", false, AdType.Interstitial);
+
+        private AdType _type;
+        public override AdType AdType => _type;
+
+        public UnityVideoAd(string placement, bool showInPremium, AdType type) : base(new PlatformValue<string>(placement))
         {
+            _type = type;
             _showInPremium = showInPremium;
         }
 

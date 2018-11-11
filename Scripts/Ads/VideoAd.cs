@@ -34,6 +34,8 @@ namespace Ads
                 return VideoAdState.None;
             }
         }
+        
+        public abstract AdType AdType { get; }
 
         public VideoAd(PlatformValue<string> unitId)
         {
@@ -102,7 +104,7 @@ namespace Ads
         public void CheckReload()
         {
             if (!HasError) return;
-            Debug.Log($"{GetType()} error, reload.");
+            Debug.Log($"{AdType} error, reload.");
             Load();
         }
 
@@ -119,7 +121,7 @@ namespace Ads
             IsShowing = false;
             IsLoading = false;
             HasError = true;
-            Tracking.Instance.Track("ad_failed", "type", GetType().Name);
+            Tracking.Instance.Track("ad_failed", "type", AdType);
             OnError?.Invoke();
             OnState?.Invoke(this, State);
         }
@@ -152,7 +154,7 @@ namespace Ads
 
         public void EmergencyReset()
         {
-            var type = GetType().Name;
+            var type = AdType;
             Tracking.Instance.Track("ad_reset_problem", "type", type);
             Tracking.Report("ad_reset_problem", $"Had to reset {type}");
             NotifyClose();

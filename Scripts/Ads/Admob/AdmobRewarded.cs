@@ -12,6 +12,7 @@ namespace Ads.Admob
         public AdmobRewarded(AdConfiguration config) : base(config)
         { }
 
+        public override AdType AdType => AdType.Rewarded;
         public override bool SupportsEditor => false;
         public override bool IsReady => _ad?.IsLoaded() ?? false;
         public override bool ShowInPremium => true;
