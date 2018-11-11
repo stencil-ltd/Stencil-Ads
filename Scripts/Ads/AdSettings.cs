@@ -50,7 +50,12 @@ namespace Ads
         public bool IgnorePremium;
         public float CustomBannerHeight;
         public float NudgeBottomSafeZone = 52f;
+
+        [Header("Unity Ads")] 
+        public AdId UnityId;
+        public UnityIdConfiguration UnityConfiguration { get; private set; }
         
+        [Header("AdMob")]
         public AdId AppId;
         public AppIdConfiguration AppConfiguration { get; private set; }        
         
@@ -66,10 +71,17 @@ namespace Ads
         protected override void OnEnable()
         {
             base.OnEnable();
+            
+            #if UNITY_ADS
+            UnityConfiguration = new UnityIdConfiguration(AppId.Android, AppId.Ios);
+            #endif
+            
+            #if STENCIL_ADMOB
             AppConfiguration = new AppIdConfiguration(AppId.Android, AppId.Ios);
             BannerConfiguration = new BannerConfiguration(BannerId.Android, BannerId.Ios);
             InterstitialConfiguration = new InterstitialConfiguration(InterstitialId.Android, InterstitialId.Ios);
             RewardConfiguration = new RewardedConfiguration(RewardedId.Android, RewardedId.Ios);
+            #endif
         }
     }
 }

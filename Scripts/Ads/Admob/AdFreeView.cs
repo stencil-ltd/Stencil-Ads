@@ -4,20 +4,18 @@ namespace Ads.Admob
 {
     public class AdFreeView : MonoBehaviour 
     {
-#if STENCIL_ADMOB
         public static int Count { get; private set; } 
 
         private void OnEnable()
         {
             Count++;
-            AdmobBannerArea.HideBanner();
+            StencilAds.HideBanner();
         }
 
         private void OnDisable()
         {
             if (--Count == 0)
-                AdmobBannerArea.ShowBanner();
+                StencilAds.ShowBanner();
         }
-#endif
     }
 }
