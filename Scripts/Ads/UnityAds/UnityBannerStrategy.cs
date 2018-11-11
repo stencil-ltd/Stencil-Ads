@@ -1,0 +1,55 @@
+using System;
+using System.Collections;
+using Plugins.UI;
+using UnityEngine;
+using UnityEngine.Advertisements;
+using Util;
+
+#if UNITY_ADS
+
+namespace Ads.UnityAds
+{
+    public class UnityBannerStrategy : IBannerArea
+    {
+        public event EventHandler OnBannerChange;
+        
+        private bool _visible;
+        public float BannerHeight => _visible ? AdSettings.Instance.CustomBannerHeight : 0f;
+        public bool IsTop => false;
+
+        public UnityBannerStrategy()
+        {
+            BannerChange();
+        }
+
+        public void BannerShow()
+        {
+            Debug.Log("Show Banner");
+            _visible = true;
+            Objects.StartCoroutine(TryShow());
+        }
+
+        public void BannerHide()
+        {
+            Debug.Log("Hide Banner");
+            _visible = false;
+            Advertisement.Banner.Hide();
+            BannerChange();
+        }
+
+        private IEnumerator TryShow()
+        {
+            while (!Advertisement.IsReady("banner"))
+                yield return new WaitForSeconds(0.5f);
+            Advertisement.Banner.Show("banner");
+            BannerChange();
+        }
+        
+        private void BannerChange()
+        {
+            OnBannerChange?.Invoke();
+        }
+    }
+}
+
+#endif

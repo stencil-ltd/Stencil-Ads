@@ -63,6 +63,7 @@ namespace Ads
             Rewarded = UnityVideoAd.Rewarded;
             Rewarded.Init();   
             Advertisement.Initialize(AdSettings.Instance.UnityConfiguration, Developers.Enabled);
+            SetBannerAdapter(new UnityBannerStrategy());
 #endif
             Debug.Log("StencilAds initialized");
 
