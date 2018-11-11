@@ -1,8 +1,8 @@
+#if UNITY_ADS
+
 using System;
 using System.Collections;
-using Ads.Ui;
 using Plugins.UI;
-using Scripts.RemoteConfig;
 using UI;
 using UnityEngine;
 using UnityEngine.Advertisements;
@@ -70,3 +70,5 @@ namespace Ads.UnityAds
         }
     }
 }
+
+#endif
