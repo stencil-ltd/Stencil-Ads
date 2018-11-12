@@ -57,12 +57,18 @@ namespace Ads
             Rewarded = new AdmobRewarded(_rewarded);
             Rewarded.Init();    
 #elif UNITY_ADS
-            Debug.Log("StencilAds (unity) initializing");
+            
+            #if UNITY_IOS
+            var appId = AdSettings.Instance.UnityId.Ios;
+            #else
+            var appId = AdSettings.Instance.UnityId.Android;
+            #endif
+            Debug.Log($"StencilAds (unity) initializing");
+            Advertisement.Initialize(appId, Developers.Enabled);
             Interstitial = UnityVideoAd.Interstitial;
             Interstitial.Init();
             Rewarded = UnityVideoAd.Rewarded;
             Rewarded.Init();   
-            Advertisement.Initialize(AdSettings.Instance.UnityConfiguration, Developers.Enabled);
             SetBannerAdapter(new UnityBannerStrategy());
 #endif
             Debug.Log("StencilAds initialized");
