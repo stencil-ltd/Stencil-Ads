@@ -2,11 +2,11 @@ using System;
 
 namespace Ads
 {
-    public interface IBannerArea
+    public interface IBannerStrategy
     {
         event EventHandler OnBannerChange;
         float BannerHeight { get; }
         void BannerShow();
-        void BannerHide();
+        void BannerHide(bool andDestroy);
     }
 }

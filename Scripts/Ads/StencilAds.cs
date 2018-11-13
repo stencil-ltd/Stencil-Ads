@@ -28,7 +28,7 @@ namespace Ads
 
         public static VideoAd Interstitial { get; private set; }
         public static VideoAd Rewarded { get; private set; }
-        public static IBannerArea Banner { get; private set; }
+        public static IBannerStrategy Banner { get; private set; }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         public static void OnSceneLoad()
@@ -56,6 +56,7 @@ namespace Ads
             Interstitial.Init();
             Rewarded = new AdmobRewarded(_rewarded);
             Rewarded.Init();    
+            SetBannerAdapter(new AdmobBannerStrategy());
 #elif UNITY_ADS
             
             #if UNITY_IOS
@@ -94,12 +95,12 @@ namespace Ads
             Banner?.BannerShow();
         }
 
-        public static void HideBanner()
+        public static void HideBanner(bool andDestroy = false)
         {
-            Banner?.BannerHide();
+            Banner?.BannerHide(andDestroy);
         }
 
-        public static void SetBannerAdapter([CanBeNull] IBannerArea banner)
+        public static void SetBannerAdapter([CanBeNull] IBannerStrategy banner)
         {
             if (Banner != null)
                 Banner.OnBannerChange -= _OnBannerChange;

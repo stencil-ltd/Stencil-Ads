@@ -23,8 +23,13 @@ namespace Ads.Ui
             _ad = StencilAds.GetAdByType(AdType);
             _button.onClick.AddListener(() =>
             {
-                _ad.ShowOnResult(b => OnResult?.Invoke(b));
+                _ad.ShowOnResult(_OnResult);
             });
+        }
+
+        private void _OnResult(bool obj)
+        {
+            OnResult?.Invoke(obj);
         }
 
         private void OnEnable()

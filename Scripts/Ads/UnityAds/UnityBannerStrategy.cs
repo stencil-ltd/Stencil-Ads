@@ -1,11 +1,11 @@
+#if UNITY_ADS
+
 using System;
 using System.Collections;
 using Plugins.UI;
 using UnityEngine;
 using UnityEngine.Advertisements;
 using Util;
-
-#if UNITY_ADS
 
 namespace Ads.UnityAds
 {

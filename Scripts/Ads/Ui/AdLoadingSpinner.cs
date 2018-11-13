@@ -43,6 +43,7 @@ namespace Ads.Ui
                 ResetAd(StencilAds.Interstitial);
             if (StencilAds.Rewarded.IsShowing)
                 ResetAd(StencilAds.Rewarded);
+            gameObject.SetActive(false);
         }
 
         private void ResetAd(VideoAd ad)

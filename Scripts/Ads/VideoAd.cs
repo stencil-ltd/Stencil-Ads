@@ -45,19 +45,6 @@ namespace Ads
         public virtual void Init()
         {
             Load();
-            OnClose += (sender, args) => Objects.StartCoroutine(_OnClose());
-        }
-
-        public void Refresh()
-        {
-            if (!IsReady && !IsLoading) Load();
-        }
-
-        private IEnumerator _OnClose()
-        {
-            IsShowing = false;
-            yield return null;
-            Load();
         }
 
         public bool Show()
@@ -81,7 +68,7 @@ namespace Ads
             }
 
             IsShowing = true;
-            OnState?.Invoke(this, State);
+            NotifyState();
             ShowInternal();
             return true;
         }
@@ -97,7 +84,7 @@ namespace Ads
         {
             HasError = false;
             IsLoading = true;
-            OnState?.Invoke(this, State);
+            NotifyState();
             LoadInternal();
         }
         
@@ -113,7 +100,7 @@ namespace Ads
             IsLoading = false;
             HasError = false;
             OnLoaded?.Invoke();
-            OnState?.Invoke(this, State);
+            NotifyState();
         }
 
         protected void NotifyError()
@@ -123,7 +110,7 @@ namespace Ads
             HasError = true;
             Tracking.Instance.Track("ad_failed", "type", AdType);
             OnError?.Invoke();
-            OnState?.Invoke(this, State);
+            NotifyState();
         }
 
         protected void NotifyComplete()
@@ -131,7 +118,8 @@ namespace Ads
             IsShowing = false;
             OnComplete?.Invoke();
             OnResult?.Invoke(null, true);
-            OnState?.Invoke(this, State);
+            NotifyState();
+            Load();
         }
 
         protected void NotifyClose()
@@ -139,7 +127,8 @@ namespace Ads
             IsShowing = false;
             OnClose?.Invoke();
             OnResult?.Invoke(null, false);
-            OnState?.Invoke(this, State);
+            NotifyState();
+            Load();
         }
 
         private IEnumerator FakeShow(bool editor)
@@ -147,7 +136,7 @@ namespace Ads
             var str = editor ? "editor" : "premium";
             Debug.LogWarning($"Ad doesn't support {str}. Completing!");
             IsShowing = true;
-            OnState?.Invoke(this, State);
+            NotifyState();
             if (editor) yield return new WaitForSeconds(3f);
             NotifyComplete();
         }
@@ -158,7 +147,12 @@ namespace Ads
             Tracking.Instance.Track("ad_reset_problem", "type", type);
             Tracking.Report("ad_reset_problem", $"Had to reset {type}");
             NotifyClose();
-            if (!IsReady) Load();
+        }
+
+        private void NotifyState()
+        {
+            Debug.Log($"{AdType} has entered state {State} (error={HasError}, loading={IsLoading}, showing={IsShowing})");
+            OnState?.Invoke(this, State);
         }
     }
 }
