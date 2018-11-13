@@ -19,12 +19,6 @@ namespace Ads
         }
     }
 
-    public class UnityIdConfiguration : AdConfiguration
-    {
-        public UnityIdConfiguration(string android, string ios) 
-            : base(android, ios, null, null) {}
-    }
-
     public class AppIdConfiguration : AdConfiguration
     {
         public AppIdConfiguration(string android, string ios) 

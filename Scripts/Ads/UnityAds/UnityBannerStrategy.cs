@@ -15,7 +15,6 @@ namespace Ads.UnityAds
         
         private bool _visible;
         public float BannerHeight => _visible ? AdSettings.Instance.CustomBannerHeight : 0f;
-        public bool IsTop => false;
 
         public UnityBannerStrategy()
         {

@@ -17,6 +17,11 @@ namespace Ads
         {
             public string Android;
             public string Ios;
+
+            public override string ToString()
+            {
+                return $"{nameof(Android)}: {Android}, {nameof(Ios)}: {Ios}";
+            }
         }
 
         public string[] TestIds { get; } =
@@ -53,8 +58,7 @@ namespace Ads
 
         [Header("Unity Ads")] 
         public AdId UnityId;
-        public UnityIdConfiguration UnityConfiguration { get; private set; }
-        
+
         [Header("AdMob")]
         public AdId AppId;
         public AppIdConfiguration AppConfiguration { get; private set; }        
@@ -71,11 +75,6 @@ namespace Ads
         protected override void OnEnable()
         {
             base.OnEnable();
-            
-            #if UNITY_ADS
-            UnityConfiguration = new UnityIdConfiguration(AppId.Android, AppId.Ios);
-            #endif
-            
             #if STENCIL_ADMOB
             AppConfiguration = new AppIdConfiguration(AppId.Android, AppId.Ios);
             BannerConfiguration = new BannerConfiguration(BannerId.Android, BannerId.Ios);
