@@ -24,6 +24,16 @@ namespace Ads
         public bool IsLoading { get; private set; }
         public bool IsShowing { get; private set; }
 
+        public bool IsReady
+        {
+            get 
+            {
+                if (!SupportsEditor && Application.isEditor)
+                    return true;
+                return PlatformIsReady;
+            }
+        }
+
         public VideoAdState State
         {
             get
@@ -74,7 +84,7 @@ namespace Ads
         }
 
         public virtual bool SupportsEditor => true;
-        public abstract bool IsReady { get; }
+        protected abstract bool PlatformIsReady { get; }
         public abstract bool ShowInPremium { get; }
 
         protected abstract void ShowInternal();
