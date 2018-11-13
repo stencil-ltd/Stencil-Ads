@@ -16,7 +16,6 @@ namespace Ads
         public event EventHandler OnLoaded;
         public event EventHandler OnError;
         public event EventHandler OnComplete;
-        public event EventHandler OnClose; // these will be the same for some ad types.
         public event EventHandler<bool> OnResult; // single callback for close or rewarded.
         public event EventHandler<VideoAdState> OnState;
 
@@ -123,20 +122,11 @@ namespace Ads
             NotifyState();
         }
 
-        protected void NotifyComplete()
+        protected void NotifyComplete(bool success)
         {
             IsShowing = false;
             OnComplete?.Invoke();
             OnResult?.Invoke(null, true);
-            NotifyState();
-            Load();
-        }
-
-        protected void NotifyClose()
-        {
-            IsShowing = false;
-            OnClose?.Invoke();
-            OnResult?.Invoke(null, false);
             NotifyState();
             Load();
         }
@@ -148,7 +138,7 @@ namespace Ads
             IsShowing = true;
             NotifyState();
             if (editor) yield return new WaitForSeconds(3f);
-            NotifyComplete();
+            NotifyComplete(true);
         }
 
         public void EmergencyReset()
@@ -156,7 +146,7 @@ namespace Ads
             var type = AdType;
             Tracking.Instance.Track("ad_reset_problem", "type", type);
             Tracking.Report("ad_reset_problem", $"Had to reset {type}");
-            NotifyClose();
+            NotifyComplete(true);
         }
 
         private void NotifyState()

@@ -14,7 +14,7 @@ namespace Ads.Admob
 
         public override AdType AdType => AdType.Rewarded;
         public override bool SupportsEditor => false;
-        public override bool IsReady => _ad?.IsLoaded() ?? false;
+        protected override bool PlatformIsReady => _ad?.IsLoaded() ?? false;
         public override bool ShowInPremium => true;
         protected override void ShowInternal() => _ad.Show();
 
@@ -22,8 +22,8 @@ namespace Ads.Admob
         {
             base.Init();
             _ad.OnAdLoaded += (sender, args) => Objects.Enqueue(NotifyLoad);
-            _ad.OnAdRewarded += (sender, reward) => Objects.Enqueue(NotifyComplete);
-            _ad.OnAdClosed += (sender, reward) => Objects.Enqueue(NotifyClose);
+            _ad.OnAdRewarded += (sender, reward) => Objects.Enqueue(() => NotifyComplete(true));
+            _ad.OnAdClosed += (sender, reward) => Objects.Enqueue(() => NotifyComplete(false));
             _ad.OnAdFailedToLoad += (sender, args) => Objects.Enqueue(NotifyError);
         }
 

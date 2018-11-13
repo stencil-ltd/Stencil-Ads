@@ -14,7 +14,7 @@ namespace Ads.Admob
 
         public override AdType AdType => AdType.Interstitial;
         public override bool SupportsEditor => false;
-        public override bool IsReady => _ad?.IsLoaded() ?? false;
+        protected override bool PlatformIsReady => _ad?.IsLoaded() ?? false;
         public override bool ShowInPremium => false;
         protected override void ShowInternal() => _ad.Show();
 
@@ -25,11 +25,7 @@ namespace Ads.Admob
             _ad.LoadAd(AdSettings.Instance.CreateRequest("interstitial"));
             _ad.OnAdLoaded += (sender, args) => Objects.Enqueue(NotifyLoad);
             _ad.OnAdFailedToLoad += (sender, args) => Objects.Enqueue(NotifyError);
-            _ad.OnAdClosed += (sender, args) => Objects.Enqueue(() =>
-            {
-                NotifyClose();
-                NotifyComplete();
-            });
+            _ad.OnAdClosed += (sender, args) => Objects.Enqueue(() => NotifyComplete(true));
         }
     }
 }
