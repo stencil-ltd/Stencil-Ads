@@ -1,3 +1,5 @@
+#if STENCIL_ADMOB
+
 using System;
 using Analytics;
 using GoogleMobileAds.Api;
@@ -95,3 +97,5 @@ namespace Ads.Admob
         }
     }
 }
+
+#endif

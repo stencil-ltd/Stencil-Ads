@@ -37,10 +37,10 @@ namespace Ads.UnityAds
                 {
                     case ShowResult.Failed:
                     case ShowResult.Skipped:
-                        NotifyClose();
+                        NotifyComplete(false);
                         break;
                     case ShowResult.Finished:
-                        NotifyComplete();
+                        NotifyComplete(true);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(result), result, null);
