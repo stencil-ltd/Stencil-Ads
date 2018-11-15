@@ -1,6 +1,6 @@
 using System;
-using Currencies;
-using JetBrains.Annotations;
+//using Currencies;
+//using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -13,11 +13,11 @@ namespace Ads.Ui
     {
         [Header("Data")]
         public AdType AdType = AdType.Rewarded;
-        public bool HasReward;
-        public Price Reward;
-
-        [Header("UI")] 
-        public Text AmountText;
+//        public bool HasReward;
+//        public Price Reward;
+//
+//        [Header("UI")] 
+//        public Text AmountText;
         
         [Header("Events")]
         public AdEvent OnResult;
@@ -40,14 +40,14 @@ namespace Ads.Ui
         private void _OnResult(bool obj)
         {
             OnResult?.Invoke(obj);
-            if (HasReward) Reward.Receive().AndSave();
+//            if (HasReward) Reward.Receive().AndSave();
         }
 
         private void OnEnable()
         {
             _ad?.CheckReload();
-            if (AmountText != null && HasReward)
-                AmountText.text = $"x{Reward.Amount}";
+//            if (AmountText != null && HasReward)
+//                AmountText.text = $"x{Reward.Amount}";
         }
 
         private void Update()
