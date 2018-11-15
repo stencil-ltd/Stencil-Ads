@@ -9,7 +9,7 @@ using Util;
 
 namespace Ads.UnityAds
 {
-    public class UnityBannerStrategy : IBannerArea
+    public class UnityBannerStrategy : IBannerStrategy
     {
         public event EventHandler OnBannerChange;
         
@@ -28,11 +28,11 @@ namespace Ads.UnityAds
             Objects.StartCoroutine(TryShow());
         }
 
-        public void BannerHide()
+        public void BannerHide(bool andDestroy)
         {
             Debug.Log("Hide Banner");
             _visible = false;
-            Advertisement.Banner.Hide();
+            Advertisement.Banner.Hide(andDestroy);
             BannerChange();
         }
 
