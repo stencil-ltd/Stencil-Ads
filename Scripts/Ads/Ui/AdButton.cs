@@ -1,4 +1,6 @@
 using System;
+using Currencies;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -9,7 +11,15 @@ namespace Ads.Ui
     [RequireComponent(typeof(CanvasGroup))]
     public class AdButton : MonoBehaviour
     {
+        [Header("Data")]
         public AdType AdType = AdType.Rewarded;
+        public bool HasReward;
+        public Price Reward;
+
+        [Header("UI")] 
+        public Text AmountText;
+        
+        [Header("Events")]
         public AdEvent OnResult;
 
         private VideoAd _ad;
@@ -30,11 +40,14 @@ namespace Ads.Ui
         private void _OnResult(bool obj)
         {
             OnResult?.Invoke(obj);
+            if (HasReward) Reward.Receive().AndSave();
         }
 
         private void OnEnable()
         {
             _ad?.CheckReload();
+            if (AmountText != null && HasReward)
+                AmountText.text = $"x{Reward.Amount}";
         }
 
         private void Update()
