@@ -126,7 +126,7 @@ namespace Ads
         {
             IsShowing = false;
             OnComplete?.Invoke();
-            OnResult?.Invoke(null, true);
+            OnResult?.Invoke(null, success);
             NotifyState();
             Load();
         }
