@@ -44,6 +44,7 @@ namespace Ads
             }
         }
         
+        public abstract string MediationName { get; }
         public abstract AdType AdType { get; }
 
         public VideoAd(PlatformValue<string> unitId)
@@ -117,7 +118,7 @@ namespace Ads
             IsShowing = false;
             IsLoading = false;
             HasError = true;
-            Tracking.Instance.Track("ad_failed", "type", AdType);
+            Tracking.Instance.Track("ad_failed", "type", AdType, "mediation", MediationName);
             OnError?.Invoke();
             NotifyState();
         }
@@ -144,8 +145,9 @@ namespace Ads
         public void EmergencyReset()
         {
             var type = AdType;
-            Tracking.Instance.Track("ad_reset_problem", "type", type);
-            Tracking.Report("ad_reset_problem", $"Had to reset {type}");
+            var med = MediationName;
+            Tracking.Instance.Track("ad_reset_problem", "type", type, "mediation", med);
+            Tracking.Report("ad_reset_problem", $"Had to reset {type} ({med})");
             NotifyComplete(true);
         }
 

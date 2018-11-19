@@ -18,6 +18,8 @@ namespace Ads.Admob
         public override bool ShowInPremium => false;
         protected override void ShowInternal() => _ad.Show();
 
+        public override string MediationName => _ad?.MediationAdapterClassName() ?? "Unknown";
+
         protected override void LoadInternal()
         {
             _ad?.Destroy();
