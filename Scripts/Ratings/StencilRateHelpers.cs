@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using PaperPlaneTools;
 using UnityEngine;
 using Util;
@@ -7,6 +8,13 @@ namespace Ratings
 {
     public static class StencilRateHelpers
     {
+#if UNITY_IOS
+		[DllImport("__Internal")]
+		private static extern bool _reviewControllerIsAvailable ();
+		[DllImport("__Internal")]
+		private static extern void _reviewControllerShow ();
+#endif
+        
         public static bool IsEnabled => StencilRateController.Instance != null;
         
         public static int SessionCount
@@ -96,6 +104,13 @@ namespace Ratings
 
         public static void GoToRateUrl(this RateSettings settings)
         {
+#if UNITY_IOS
+            if (settings.IosNativeRating && _reviewControllerIsAvailable())
+            {
+                _reviewControllerShow();
+                return;
+            }
+#endif
             Application.OpenURL(settings.RateUrl);
         }
 

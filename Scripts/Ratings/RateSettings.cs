@@ -25,7 +25,8 @@ namespace Ratings
         
         [RemoteField("rate_post_cancel")]
         public float HoursAfterPostpone = 72;
-        
+
+        public bool IosNativeRating;
         public bool RequireInternetConnection => true;
         public string RateUrl => StencilRateHelpers.GetStoreUrl(""+AppStoreId, PlayStoreId);
     }
