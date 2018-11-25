@@ -7,31 +7,29 @@ using UnityEngine.UI;
 
 namespace Ads.Ui
 {
-    [RequireComponent(typeof(Button))]
-    [RequireComponent(typeof(CanvasGroup))]
     public class AdButton : MonoBehaviour
     {
         [Header("Data")]
         public AdType AdType = AdType.Rewarded;
-//        public bool HasReward;
-//        public Price Reward;
-//
-//        [Header("UI")] 
-//        public Text AmountText;
+        
+        [Header("UI")]
+        public Button Button;
+        public CanvasGroup CanvasGroup;
         
         [Header("Events")]
         public AdEvent OnResult;
 
         private VideoAd _ad;
-        private Button _button;
-        private CanvasGroup _cg;
 
         private void Awake()
         {
-            _button = GetComponent<Button>();
-            _cg = GetComponent<CanvasGroup>();
+            if (Button == null)
+                Button = GetComponent<Button>();
+            if (CanvasGroup == null)
+                CanvasGroup = GetComponent<CanvasGroup>();
+            
             _ad = StencilAds.GetAdByType(AdType);
-            _button.onClick.AddListener(() =>
+            Button.onClick.AddListener(() =>
             {
                 _ad.ShowOnResult(_OnResult);
             });
@@ -40,20 +38,17 @@ namespace Ads.Ui
         private void _OnResult(bool obj)
         {
             OnResult?.Invoke(obj);
-//            if (HasReward) Reward.Receive().AndSave();
         }
 
         private void OnEnable()
         {
             _ad?.CheckReload();
-//            if (AmountText != null && HasReward)
-//                AmountText.text = $"x{Reward.Amount}";
         }
 
         private void Update()
         {
-            _button.enabled = _ad?.IsReady ?? false;
-            _cg.alpha = _button.enabled ? 1f : 0.3f;
+            Button.enabled = _ad?.IsReady ?? false;
+            CanvasGroup.alpha = Button.enabled ? 1f : 0.3f;
         }
     }
 
