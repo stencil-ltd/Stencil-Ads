@@ -92,7 +92,7 @@ namespace Ratings
             SessionCount++;
         }
 
-        public static void RecordRating(int stars)
+        public static void RecordRating()
         {
             IsRated = true;
         }

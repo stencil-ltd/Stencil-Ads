@@ -62,6 +62,13 @@ namespace Ratings
             Rater.gameObject.SetActive(true);
         }
 
+        public void GoToRating()
+        {
+            StencilRateHelpers.RecordRating();
+            Settings.GoToRateUrl();
+            Rater.Dismiss();
+        }
+
         private void OnRemoteConfig(object sender, EventArgs e)
         {
             Settings.BindRemoteConfig();
@@ -69,14 +76,14 @@ namespace Ratings
 
         private void OnPositive(int arg0)
         {
-            StencilRateHelpers.RecordRating(arg0);
+            StencilRateHelpers.RecordRating();
             Settings.GoToRateUrl();
             Rater.Dismiss();
         }
 
         private void OnNegative(int arg0)
         {
-            StencilRateHelpers.RecordRating(arg0);
+            StencilRateHelpers.RecordRating();
             Rater.AskForFeedback();
         }
 
