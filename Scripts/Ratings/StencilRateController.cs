@@ -17,7 +17,8 @@ namespace Ratings
         [Header("Obsolete")]
         public RateConfig Settings = new RateConfig();
         
-        public RateConfig GetConfig() => RateSettings.Instance?.Config ?? Settings; 
+        public static RateConfig GetConfig() 
+            => RateSettings.Instance?.Config ?? Instance?.Settings; 
 
         private void Start()
         {
@@ -25,7 +26,7 @@ namespace Ratings
             Rater.OnPositive.AddListener(OnPositive);
             Rater.OnNegative.AddListener(OnNegative);
             
-            GetConfig().BindRemoteConfig();
+            Settings?.BindRemoteConfig();
         }
 
         public override void Register()
@@ -74,7 +75,7 @@ namespace Ratings
 
         private void OnRemoteConfig(object sender, EventArgs e)
         {
-            GetConfig().BindRemoteConfig();
+            Settings?.BindRemoteConfig();
         }
 
         private void OnPositive(int arg0)

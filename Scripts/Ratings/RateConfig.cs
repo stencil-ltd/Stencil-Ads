@@ -24,6 +24,10 @@ namespace Ratings
         [RemoteField("rate_post_cancel")]
         public float HoursAfterPostpone = 72;
 
+        [Header("Behavior")] 
+        [RemoteField("rate_skip_dialog")]
+        public bool SkipDialog;
+
         [Header("iOS Settings")]
         [RemoteField("rate_ios_native")]
         public bool IosNativeRating;

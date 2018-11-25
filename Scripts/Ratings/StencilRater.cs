@@ -16,6 +16,7 @@ namespace Ratings
         public int StarsForPositive = 4;
         public int BeginWithStars = 3;
         public RateStar[] Stars;
+        public GameObject StarParent;
 
         [Header("Initial UI")]
         public GameObject Initial;
@@ -26,6 +27,12 @@ namespace Ratings
         public GameObject Why;
         public Button CancelFeedback;
         public Button SendFeedback;
+
+        [Header("Skip UI")] 
+        public GameObject SkipPrompt;
+        public Button SkipYes;
+        public Button SkipNo;
+        public Button SkipNever;
         
         public StarEvent OnPositive;
         public StarEvent OnNegative;
@@ -38,6 +45,7 @@ namespace Ratings
         {
             Initial.SetActive(false);
             Why.SetActive(true);
+            SkipPrompt.SetActive(false);
         }
 
         private void Awake()
@@ -49,6 +57,10 @@ namespace Ratings
             
             CancelFeedback.onClick.AddListener(() => CancelRating(true));
             SendFeedback.onClick.AddListener(Feedback);
+            
+            SkipYes.onClick.AddListener(SendToRating);
+            SkipNo.onClick.AddListener(() => CancelRating(false));
+            SkipNever.onClick.AddListener(NeverRating);
         }
 
         private void OnEnable()
@@ -64,12 +76,21 @@ namespace Ratings
                 star.Button.onClick.AddListener(() => Rate(i1+1));
                 star.Fill.enabled = i < BeginWithStars;
             }
-            
-            Initial.SetActive(true);
+
+            var skipDialog = StencilRateController.GetConfig().SkipDialog;
+            Initial.SetActive(!skipDialog);
+            SkipPrompt.SetActive(skipDialog);
             Why.SetActive(false);
-            
+            if (StarParent != null) 
+                StarParent.SetActive(!skipDialog);
+
             Tracking.Instance.Track("rating_show")
                 .SetUserProperty("rating_shown", true);
+        }
+
+        private void SendToRating()
+        {
+            OnPositive?.Invoke(0);
         }
 
         private void Feedback()
