@@ -13,7 +13,7 @@ namespace Ratings
             GetComponent<Button>().onClick.AddListener(() =>
             {
                 if (SkipDialog)
-                    StencilRateController.Instance.GoToRating();
+                    RateSettings.Instance.Config.Rate();
                 else
                     StencilRateController.Instance.ForceShow();
             });

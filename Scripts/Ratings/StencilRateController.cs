@@ -8,19 +8,24 @@ namespace Ratings
 {
     public class StencilRateController : Controller<StencilRateController>
     {
-        public RateSettings Settings = new RateSettings();
-
         [Header("UI")]
         public float DelayShow = 1f;
         public bool CheckAtAwake = true;
         public StencilRater Rater;
+        
+        [Obsolete("Use Rate Settings + GetConfig() instead.")]
+        [Header("Obsolete")]
+        public RateConfig Settings = new RateConfig();
+        
+        public RateConfig GetConfig() => RateSettings.Instance?.Config ?? Settings; 
 
         private void Start()
         {
             Rater.OnNever.AddListener(OnNever);
             Rater.OnPositive.AddListener(OnPositive);
             Rater.OnNegative.AddListener(OnNegative);
-            Settings.BindRemoteConfig();
+            
+            GetConfig().BindRemoteConfig();
         }
 
         public override void Register()
@@ -50,8 +55,7 @@ namespace Ratings
 
         public bool Check()
         {
-            if (!Settings.CheckConditions()) 
-                return false;
+            if (!GetConfig().CheckConditions()) return false;
             ForceShow();
             return true;
         }
@@ -64,21 +68,18 @@ namespace Ratings
 
         public void GoToRating()
         {
-            StencilRateHelpers.RecordRating();
-            Settings.GoToRateUrl();
+            GetConfig().Rate();
             Rater.Dismiss();
         }
 
         private void OnRemoteConfig(object sender, EventArgs e)
         {
-            Settings.BindRemoteConfig();
+            GetConfig().BindRemoteConfig();
         }
 
         private void OnPositive(int arg0)
         {
-            StencilRateHelpers.RecordRating();
-            Settings.GoToRateUrl();
-            Rater.Dismiss();
+            GoToRating();
         }
 
         private void OnNegative(int arg0)

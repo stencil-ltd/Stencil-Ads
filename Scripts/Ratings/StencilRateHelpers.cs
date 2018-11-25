@@ -102,7 +102,13 @@ namespace Ratings
             IsRejected = true;
         }
 
-        public static void GoToRateUrl(this RateSettings settings)
+        public static void Rate(this RateConfig settings)
+        {
+            RecordRating();
+            settings.GoToRateUrl();
+        }
+
+        public static void GoToRateUrl(this RateConfig settings)
         {
 #if UNITY_IOS
             if (settings.IosNativeRating && _reviewControllerIsAvailable())
@@ -119,7 +125,7 @@ namespace Ratings
             LastShow = DateTime.UtcNow;
         }
         
-        public static bool CheckConditions(this RateSettings settings)
+        public static bool CheckConditions(this RateConfig settings)
         {
             var firstCheck = FirstCheck ?? DateTime.UtcNow;
             FirstCheck = firstCheck;
