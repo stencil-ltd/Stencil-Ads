@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using Analytics;
 using PaperPlaneTools;
 using UnityEngine;
 using Util;
@@ -104,12 +105,14 @@ namespace Ratings
 
         public static void Rate(this RateConfig settings)
         {
+            Tracking.Instance.Track("rate").SetUserProperty("has_rated", true);
             RecordRating();
             settings.GoToRateUrl();
         }
 
         public static void Review(this RateConfig settings)
         {
+            Tracking.Instance.Track("review").SetUserProperty("has_reviewed", true);
             RecordRating();
             Application.OpenURL(settings.RateUrl);
         }
