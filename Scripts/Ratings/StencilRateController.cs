@@ -64,6 +64,10 @@ namespace Ratings
         public void ForceShow()
         {
             StencilRateHelpers.MarkShown();
+#if UNITY_IOS
+            if (StencilRateHelpers.NativeRate())
+                return;
+#endif          
             Rater.gameObject.SetActive(true);
         }
 

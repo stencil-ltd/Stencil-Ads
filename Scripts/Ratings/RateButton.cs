@@ -7,13 +7,17 @@ namespace Ratings
     public class RateButton : MonoBehaviour
     {
         public bool SkipDialog;
+        public bool Review;
         
         private void Awake()
         {
             GetComponent<Button>().onClick.AddListener(() =>
             {
                 if (SkipDialog)
-                    RateSettings.Instance.Config.Rate();
+                    if (Review)
+                        RateSettings.Instance.Config.Review();
+                    else
+                        RateSettings.Instance.Config.Rate();
                 else
                     StencilRateController.Instance.ForceShow();
             });

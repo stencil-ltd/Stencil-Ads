@@ -108,16 +108,31 @@ namespace Ratings
             settings.GoToRateUrl();
         }
 
+        public static void Review(this RateConfig settings)
+        {
+            RecordRating();
+            Application.OpenURL(settings.RateUrl);
+        }
+        
+        #if UNITY_IOS
+        public static bool NativeRate()
+        {
+            if (_reviewControllerIsAvailable())
+            {
+                _reviewControllerShow();
+                return true;
+            }
+            return false;
+        }
+        #endif
+
         public static void GoToRateUrl(this RateConfig settings)
         {
 #if UNITY_IOS
-            if (settings.IosNativeRating && _reviewControllerIsAvailable())
-            {
-                _reviewControllerShow();
+            if (settings.IosNativeRating && NativeRate())
                 return;
-            }
 #endif
-            Application.OpenURL(settings.RateUrl);
+            settings.Review();
         }
 
         public static void MarkShown()
