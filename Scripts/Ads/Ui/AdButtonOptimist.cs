@@ -69,7 +69,7 @@ namespace Ads.Ui
             foreach (var o in loading)
                 o.SetActive(_loading);
             foreach (var o in ready)
-                o.SetActive(!_loading && !_error);
+                o.SetActive(!_loading);
             foreach (var o in error)
                 o.SetActive(_error);
         }
