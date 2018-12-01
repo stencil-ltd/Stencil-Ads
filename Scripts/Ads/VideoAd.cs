@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using Ads.State;
 using Ads.Ui;
 using Analytics;
+using Dev;
 using UnityEngine;
 using Util;
 
@@ -25,8 +26,10 @@ namespace Ads
 
         public bool IsReady
         {
-            get 
+            get
             {
+                if (Developers.Enabled && AdSettings.Instance.ForceNotReady)
+                    return false;
                 if (!SupportsEditor && Application.isEditor)
                     return true;
                 return PlatformIsReady;

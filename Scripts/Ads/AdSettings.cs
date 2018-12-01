@@ -53,6 +53,7 @@ namespace Ads
         public bool BannerAtTop;
         public bool IgnoreTestIds;
         public bool IgnorePremium;
+        public bool ForceNotReady;
         public float CustomBannerHeight;
         public float NudgeBottomSafeZone = 52f;
 

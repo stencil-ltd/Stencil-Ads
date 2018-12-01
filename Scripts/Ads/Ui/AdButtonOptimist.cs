@@ -32,6 +32,11 @@ namespace Ads.Ui
             button.onClick.AddListener(() => StartCoroutine(_ShowAd()));
         }
 
+        private void Start()
+        {
+            RefreshUi();
+        }
+
         private IEnumerator _ShowAd()
         {
             button.enabled = false;
@@ -67,11 +72,11 @@ namespace Ads.Ui
         private void RefreshUi()
         {
             foreach (var o in loading)
-                o.SetActive(_loading);
+                if (o != null) o.SetActive(_loading);
             foreach (var o in ready)
-                o.SetActive(!_loading);
+                if (o != null) o.SetActive(!_loading);
             foreach (var o in error)
-                o.SetActive(_error);
+                if (o != null) o.SetActive(_error);
         }
     }
 }
