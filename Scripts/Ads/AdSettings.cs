@@ -22,6 +22,17 @@ namespace Ads
             {
                 return $"{nameof(Android)}: {Android}, {nameof(Ios)}: {Ios}";
             }
+
+            public static implicit operator string(AdId id)
+            {
+                #if UNITY_IOS
+                return id.Ios;
+                #elif UNITY_ANDROID
+                return id.Android;
+                #else
+                return "";
+                #endif
+            }
         }
 
         public string[] TestIds { get; } =
@@ -56,6 +67,9 @@ namespace Ads
         public bool ForceNotReady;
         public float CustomBannerHeight;
         public float NudgeBottomSafeZone = 52f;
+
+        [Header("Iron Source")] 
+        public AdId ironSourceId;
 
         [Header("Unity Ads")] 
         public AdId UnityId;
