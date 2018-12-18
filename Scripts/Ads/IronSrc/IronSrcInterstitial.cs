@@ -19,9 +19,10 @@ namespace Ads.IronSrc
         public override AdType AdType 
             => AdType.Interstitial;
         protected override bool PlatformIsReady 
-            => Application.isEditor || IronSource.Agent.isInterstitialReady();
+            => IronSource.Agent.isInterstitialReady();
         public override bool ShowInPremium 
             => false;
+        public override bool SupportsEditor => false;
         
         protected override void ShowInternal()
         {

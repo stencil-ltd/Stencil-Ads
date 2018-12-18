@@ -20,9 +20,11 @@ namespace Ads.IronSrc
         public override AdType AdType 
             => AdType.Rewarded;
         protected override bool PlatformIsReady 
-            => Application.isEditor || IronSource.Agent.isRewardedVideoAvailable();
+            => IronSource.Agent.isRewardedVideoAvailable();
         public override bool ShowInPremium 
             => true;
+        public override bool SupportsEditor => false;
+
         protected override void ShowInternal()
         {
             IronSource.Agent.showRewardedVideo();
