@@ -5,7 +5,7 @@ namespace Ads.IronSrc
 {
     public class IronSrcRewarded : VideoAd
     {
-        public IronSrcRewarded(PlatformValue<string> unitId) : base(unitId)
+        public IronSrcRewarded()
         {
             StencilIronSrc.Init(AdSettings.Instance.ironSourceId);
             IronSourceEvents.onRewardedVideoAdClosedEvent += RewardedVideoAdClosedEvent; 

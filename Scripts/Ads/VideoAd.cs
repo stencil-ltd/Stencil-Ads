@@ -50,6 +50,10 @@ namespace Ads
         public abstract string MediationName { get; }
         public abstract AdType AdType { get; }
 
+        protected VideoAd()
+        {
+        }
+
         public VideoAd(PlatformValue<string> unitId)
         {
             UnitId = unitId;

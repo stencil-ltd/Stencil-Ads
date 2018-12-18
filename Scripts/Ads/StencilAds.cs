@@ -15,6 +15,10 @@ using GoogleMobileAdsMediationTestSuite.Api;
 using Ads.UnityAds;
 #endif
 
+#if STENCIL_IRONSRC
+using Ads.IronSrc;
+#endif
+
 namespace Ads
 {
     public static class StencilAds
@@ -71,6 +75,9 @@ namespace Ads
             Rewarded = UnityVideoAd.Rewarded;
             Rewarded.Init();   
             SetBannerAdapter(new UnityBannerStrategy());
+#elif STENCIL_IRONSRC
+            Rewarded = new IronSrcRewarded();
+            Interstitial = new IronSrcInterstitial();
 #endif
             Debug.Log("StencilAds initialized");
 
