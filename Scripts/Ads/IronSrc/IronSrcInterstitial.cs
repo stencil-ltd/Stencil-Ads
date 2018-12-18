@@ -1,4 +1,5 @@
 #if STENCIL_IRONSRC
+using UnityEngine;
 using Util;
 
 namespace Ads.IronSrc
@@ -18,7 +19,7 @@ namespace Ads.IronSrc
         public override AdType AdType 
             => AdType.Interstitial;
         protected override bool PlatformIsReady 
-            => IronSource.Agent.isInterstitialReady();
+            => Application.isEditor || IronSource.Agent.isInterstitialReady();
         public override bool ShowInPremium 
             => false;
         

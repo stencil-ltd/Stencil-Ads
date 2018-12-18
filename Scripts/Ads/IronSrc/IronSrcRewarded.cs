@@ -1,4 +1,5 @@
 #if STENCIL_IRONSRC
+using UnityEngine;
 using Util;
 
 namespace Ads.IronSrc
@@ -19,7 +20,7 @@ namespace Ads.IronSrc
         public override AdType AdType 
             => AdType.Rewarded;
         protected override bool PlatformIsReady 
-            => IronSource.Agent.isRewardedVideoAvailable();
+            => Application.isEditor || IronSource.Agent.isRewardedVideoAvailable();
         public override bool ShowInPremium 
             => true;
         protected override void ShowInternal()
