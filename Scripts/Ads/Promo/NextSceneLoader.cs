@@ -1,15 +1,22 @@
+using System;
 using System.Collections;
+using Audio;
+using Scripts.Audio;
+using UI;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace Ads.Promo
 {
-    public class NextSceneLoader : MonoBehaviour
+    public class NextSceneLoader : Controller<NextSceneLoader>
     {
         public float LoadTime = 2f;
         public int CustomSceneIndex = -1;
         
+        public bool IsLoading { get; private set; }
+        public event EventHandler<bool> OnLoading;
+
         private AsyncOperation _scene;
         private int _currentIndex;
         private bool _paused;
@@ -22,6 +29,8 @@ namespace Ads.Promo
         private void Awake()
         {
             _currentIndex = SceneManager.GetActiveScene().buildIndex;
+            IsLoading = true;
+            OnLoading?.Invoke(this, IsLoading);
         }
 
         private IEnumerator Start()
@@ -31,7 +40,7 @@ namespace Ads.Promo
             if (index <= 0)
                 index = _currentIndex + 1;
             _scene = SceneManager.LoadSceneAsync(index, LoadSceneMode.Additive);
-            _scene.allowSceneActivation = false;
+//            _scene.allowSceneActivation = false;
         
             yield return new WaitForSeconds(LoadTime);
             if (!_paused)
@@ -51,6 +60,8 @@ namespace Ads.Promo
         {
             yield return null;
             SceneManager.UnloadSceneAsync(_currentIndex);
+            IsLoading = false;
+            OnLoading?.Invoke(this, IsLoading);
         }
     }
 }
