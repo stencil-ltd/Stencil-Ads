@@ -19,7 +19,7 @@ namespace Ads.Ui
         
         [Header("Events")]
         public AdEvent onResult;
-        
+
         private VideoAd _ad;
         
         private bool _loading;
