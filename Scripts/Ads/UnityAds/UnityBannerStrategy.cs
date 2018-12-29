@@ -32,7 +32,7 @@ namespace Ads.UnityAds
         {
             Debug.Log("Hide Banner");
             _visible = false;
-            Advertisement.Banner.Hide(andDestroy);
+            Advertisement.Banner.Hide(andDestroy); 
             BannerChange();
         }
 

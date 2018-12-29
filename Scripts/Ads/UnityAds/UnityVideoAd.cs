@@ -25,7 +25,7 @@ namespace Ads.UnityAds
 
         protected override bool PlatformIsReady => Advertisement.IsReady(UnitId);
         public override bool ShowInPremium => _showInPremium;
-        public override bool SupportsEditor => false;
+        public override bool SupportsEditor => true;
 
         protected override void ShowInternal()
         {

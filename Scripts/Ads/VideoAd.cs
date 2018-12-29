@@ -46,8 +46,8 @@ namespace Ads
                 return VideoAdState.None;
             }
         }
-        
-        public abstract string MediationName { get; }
+
+        public virtual string MediationName => "(Unknown)";
         public abstract AdType AdType { get; }
 
         protected VideoAd()

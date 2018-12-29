@@ -1,5 +1,7 @@
 using System;
+using Scripts.RemoteConfig;
 using UnityEngine;
+using UnityEngine.Advertisements;
 using Util;
 
 #if STENCIL_ADMOB
@@ -90,12 +92,19 @@ namespace Ads
         protected override void OnEnable()
         {
             base.OnEnable();
-            #if STENCIL_ADMOB
+            if (Application.isPlaying)
+            {
+#if STENCIL_ADMOB
             AppConfiguration = new AppIdConfiguration(AppId.Android, AppId.Ios);
             BannerConfiguration = new BannerConfiguration(BannerId.Android, BannerId.Ios);
             InterstitialConfiguration = new InterstitialConfiguration(InterstitialId.Android, InterstitialId.Ios);
             RewardConfiguration = new RewardedConfiguration(RewardedId.Android, RewardedId.Ios);
-            #endif
+#endif
+            
+#if UNITY_ADS
+                Advertisement.Initialize(UnityId, !StencilRemote.IsProd());
+#endif
+            }
         }
     }
 }
