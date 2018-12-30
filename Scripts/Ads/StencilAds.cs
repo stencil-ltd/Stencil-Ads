@@ -61,6 +61,9 @@ namespace Ads
             Rewarded = new AdmobRewarded(_rewarded);
             Rewarded.Init();    
             SetBannerAdapter(new AdmobBannerStrategy());
+#elif STENCIL_IRONSRC
+            Rewarded = new IronSrcRewarded();
+            Interstitial = new IronSrcInterstitial();
 #elif UNITY_ADS
             
             #if UNITY_IOS
@@ -75,9 +78,6 @@ namespace Ads
             Rewarded = UnityVideoAd.Rewarded;
             Rewarded.Init();   
             SetBannerAdapter(new UnityBannerStrategy());
-#elif STENCIL_IRONSRC
-            Rewarded = new IronSrcRewarded();
-            Interstitial = new IronSrcInterstitial();
 #endif
             Debug.Log("StencilAds initialized");
 
