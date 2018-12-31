@@ -20,20 +20,12 @@ namespace Ratings
         
         private void OnEnable()
         {
-            if (!StencilRateHelpers.IsEnabled)
-            {
-                Debug.LogWarning("Rating is not enabled...");
-                enabled = false;
-                return;
-            }
-            
-            if (checkAtAwake)
-                Invoke(nameof(Check), Math.Max(0.1f, delayShow));
+            if (checkAtAwake) Invoke(nameof(Check), Math.Max(0.1f, delayShow));
         }
 
         public bool Check()
         {
-            if (!RateSettings.Instance.Config.CheckConditions()) return false;
+//            if (!RateSettings.Instance.Config.CheckConditions()) return false;
             ForceShow();
             return true;
         }

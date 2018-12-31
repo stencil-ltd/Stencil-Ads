@@ -16,8 +16,6 @@ namespace Ratings
 		private static extern void _reviewControllerShow ();
 #endif
         
-        public static bool IsEnabled => StencilRateController.Instance != null;
-        
         public static int SessionCount
         {
             get { return PlayerPrefs.GetInt("stencil_rate_sessions"); }
