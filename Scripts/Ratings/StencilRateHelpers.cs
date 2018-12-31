@@ -98,6 +98,8 @@ namespace Ratings
 
         public static void Reject()
         {
+            Debug.Log("Reject review forever");
+            Tracking.Instance.Track("rate_reject").SetUserProperty("rate_reject", true);
             IsRejected = true;
         }
 
@@ -129,6 +131,7 @@ namespace Ratings
 
         public static void GoToRateUrl(this RateConfig settings)
         {
+            Debug.Log("Opening store URL for review!");
 #if UNITY_IOS
             if (settings.IosNativeRating && NativeRate())
                 return;

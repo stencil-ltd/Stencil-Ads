@@ -45,12 +45,17 @@ namespace Ratings
         
         private void AlertReview()
         {
-            var config = RateSettings.Instance.Config;
             new Alert($"Enjoying {Application.productName}?", "Would you mind leaving us a review?")
                 .SetNegativeButton("Never", StencilRateHelpers.Reject)
                 .SetNeutralButton("Maybe Later")
-                .SetPositiveButton("OK!", () => { config.GoToRateUrl(); })
+                .SetPositiveButton("OK!", onOk)
                 .Show();
+        }
+
+        private void onOk()
+        {
+            var config = RateSettings.Instance.Config;
+            config.GoToRateUrl();
         }
     }
 }
