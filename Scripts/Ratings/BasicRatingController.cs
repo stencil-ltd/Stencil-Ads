@@ -1,6 +1,7 @@
 using System;
 using PaperPlaneTools;
 using Scripts.RemoteConfig;
+using Sirenix.OdinInspector;
 using UI;
 using UnityEngine;
 
@@ -17,7 +18,6 @@ namespace Ratings
             RateSettings.Instance.BindRemoteConfig();
         }
         
-
         private void OnEnable()
         {
             if (!StencilRateHelpers.IsEnabled)
@@ -38,6 +38,9 @@ namespace Ratings
             return true;
         }
         
+        #if ODIN_INSPECTOR
+        [Button]
+        #endif
         public void ForceShow()
         {
             StencilRateHelpers.MarkShown();
@@ -47,7 +50,7 @@ namespace Ratings
             AlertReview();
             #endif
         }
-
+        
         private void AlertReview()
         {
             var config = RateSettings.Instance.Config;
