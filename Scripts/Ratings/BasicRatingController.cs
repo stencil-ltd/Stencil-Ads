@@ -25,7 +25,7 @@ namespace Ratings
 
         public bool Check()
         {
-//            if (!RateSettings.Instance.Config.CheckConditions()) return false;
+            if (!RateSettings.Instance.Config.CheckConditions()) return false;
             ForceShow();
             return true;
         }
