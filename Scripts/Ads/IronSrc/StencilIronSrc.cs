@@ -12,11 +12,9 @@ namespace Ads.IronSrc
             if (_init) return;
             _init = true;
             IronSource.Agent.init(appKey);
-            if (StencilRemote.IsDeveloper())
-            {
-                Debug.Log("IronSrc validating integration...");
-                IronSource.Agent.validateIntegration();
-            }
+            if (!StencilRemote.IsDeveloper()) return;
+            Debug.Log("IronSrc validating integration...");
+            IronSource.Agent.validateIntegration();
         }
     }
 }
