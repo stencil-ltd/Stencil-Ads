@@ -1,3 +1,6 @@
+using Scripts.RemoteConfig;
+using UnityEngine;
+
 #if STENCIL_IRONSRC
 namespace Ads.IronSrc
 {
@@ -9,6 +12,11 @@ namespace Ads.IronSrc
             if (_init) return;
             _init = true;
             IronSource.Agent.init(appKey);
+            if (StencilRemote.IsDeveloper())
+            {
+                Debug.Log("IronSrc validating integration...");
+                IronSource.Agent.validateIntegration();
+            }
         }
     }
 }

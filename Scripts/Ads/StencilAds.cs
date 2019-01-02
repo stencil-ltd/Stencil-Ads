@@ -33,6 +33,9 @@ namespace Ads
         public static VideoAd Interstitial { get; private set; }
         public static VideoAd Rewarded { get; private set; }
         public static IBannerStrategy Banner { get; private set; }
+        
+        [CanBeNull] 
+        public static string AdvertisingId { get; private set; }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         public static void OnSceneLoad()
@@ -40,6 +43,7 @@ namespace Ads
             CheckReload();
         }
 
+        private static bool _hasAds;
         private static bool _init;
         public static bool HasInit => _init;
 
@@ -61,11 +65,12 @@ namespace Ads
             Rewarded = new AdmobRewarded(_rewarded);
             Rewarded.Init();    
             SetBannerAdapter(new AdmobBannerStrategy());
+            _hasAds = true;
 #elif STENCIL_IRONSRC
             Rewarded = new IronSrcRewarded();
             Interstitial = new IronSrcInterstitial();
+            _hasAds = true;
 #elif UNITY_ADS
-            
             #if UNITY_IOS
             var appId = AdSettings.Instance.UnityId.Ios;
             #else
@@ -78,10 +83,20 @@ namespace Ads
             Rewarded = UnityVideoAd.Rewarded;
             Rewarded.Init();   
             SetBannerAdapter(new UnityBannerStrategy());
+            _hasAds = true;
 #endif
             Debug.Log("StencilAds initialized");
 
             StencilPremium.OnPremiumPurchased += OnPremium;
+
+            if (_hasAds)
+            {
+                Application.RequestAdvertisingIdentifierAsync((id, enabled, msg) =>
+                {
+                    AdvertisingId = id;
+                    Debug.Log($"Advertising Id is {id} (enabled={enabled})");
+                });
+            }
         }
 
         public static event EventHandler OnBannerChange;
