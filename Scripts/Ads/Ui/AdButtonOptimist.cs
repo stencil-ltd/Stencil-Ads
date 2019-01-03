@@ -9,7 +9,7 @@ namespace Ads.Ui
     {
         [Header("Data")]
         public AdType adType = AdType.Rewarded;
-        public float timeout = 5f;
+        public float loadTimeout = 10f;
         
         [Header("UI")]
         public Button button;
@@ -43,7 +43,7 @@ namespace Ads.Ui
             _error = false;
             
             var now = DateTime.UtcNow;
-            while (!_ad.IsReady && (DateTime.UtcNow - now).TotalSeconds < timeout)
+            while (!_ad.IsReady && (DateTime.UtcNow - now).TotalSeconds < loadTimeout)
             {
                 _loading = true;
                 RefreshUi();
