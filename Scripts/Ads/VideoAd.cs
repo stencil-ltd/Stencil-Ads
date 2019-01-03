@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using System.Security.Cryptography;
 using Ads.State;
 using Ads.Ui;
 using Analytics;
 using Dev;
+using Stencil.Util;
 using UnityEngine;
 using Util;
 
@@ -120,12 +122,14 @@ namespace Ads
             NotifyState();
         }
 
-        protected void NotifyError()
+        protected void NotifyError(params object[] args)
         {
             IsShowing = false;
             IsLoading = false;
             HasError = true;
-            Tracking.Instance.Track("ad_failed", "type", AdType, "mediation", MediationName);
+            args = args.Append("type").Append(AdType).Append("mediation").Append(MediationName).ToArray();
+            Tracking.Instance.Track("ad_failed", args);
+            Tracking.Report("ad_failed", Json.Serialize(args));
             OnError?.Invoke();
             NotifyState();
         }

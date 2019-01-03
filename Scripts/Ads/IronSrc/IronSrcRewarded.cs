@@ -1,4 +1,5 @@
 #if STENCIL_IRONSRC
+using Analytics;
 using UnityEngine;
 using Util;
 
@@ -42,7 +43,7 @@ namespace Ads.IronSrc
 
         private void RewardedVideoAdShowFailedEvent(IronSourceError obj)
         {
-            NotifyError();
+            NotifyError("error", obj.ToString());
         }
 
         private void RewardedVideoAdClosedEvent()
