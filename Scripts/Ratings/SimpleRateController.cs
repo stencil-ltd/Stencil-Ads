@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Ratings
 {
-    public class BasicRatingController : Controller<BasicRatingController>
+    public class SimpleRateController : Controller<SimpleRateController>
     {
         public float delayShow = 1f;
         public bool checkAtAwake = true;
@@ -37,10 +37,10 @@ namespace Ratings
         {
             StencilRateHelpers.MarkShown();
             #if UNITY_IOS
-            StencilRateHelpers.NativeRate();
-            #else
-            AlertReview();
+            if (StencilRateHelpers.NativeRate()) 
+                return;
             #endif
+            AlertReview();
         }
         
         private void AlertReview()

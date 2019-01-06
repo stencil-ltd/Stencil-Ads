@@ -120,6 +120,9 @@ namespace Ratings
         #if UNITY_IOS
         public static bool NativeRate()
         {
+            #if UNITY_EDITOR
+            return false;
+            #endif
             if (_reviewControllerIsAvailable())
             {
                 _reviewControllerShow();
