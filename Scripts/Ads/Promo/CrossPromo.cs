@@ -8,6 +8,7 @@ using Analytics;
 using Binding;
 using Dev;
 using JetBrains.Annotations;
+using Scripts.Util;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
@@ -315,7 +316,7 @@ namespace Ads.Promo
             Debug.Log($"Received metadata: {json}");
             _meta = JsonUtility.FromJson<PromoMetadata>(json);
             if (Developers.Enabled && SkipCaching)
-                _meta.version = Random.Range(0, int.MaxValue);
+                _meta.version = StencilRandom.Range(0, int.MaxValue);
         }
 
         private string GetDownloadUrl()
