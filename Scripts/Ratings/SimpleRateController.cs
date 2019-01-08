@@ -1,4 +1,5 @@
 using System;
+using Analytics;
 using PaperPlaneTools;
 using Scripts.RemoteConfig;
 using Sirenix.OdinInspector;
@@ -35,6 +36,7 @@ namespace Ratings
         #endif
         public void ForceShow()
         {
+            Tracking.Instance.Track("rate_show");
             StencilRateHelpers.MarkShown();
             #if UNITY_IOS
             if (StencilRateHelpers.NativeRate()) 
