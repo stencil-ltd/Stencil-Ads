@@ -1,6 +1,5 @@
 #if STENCIL_IRONSRC
-using UnityEngine;
-using Util;
+using Analytics;
 
 namespace Ads.IronSrc
 {
@@ -12,6 +11,8 @@ namespace Ads.IronSrc
             IronSourceEvents.onInterstitialAdClosedEvent += RewardedVideoAdClosedEvent; 
             IronSourceEvents.onInterstitialAdReadyEvent += RewardedVideoAvailabilityChangedEvent;
             IronSourceEvents.onInterstitialAdShowFailedEvent += RewardedVideoAdShowFailedEvent;
+            IronSourceEvents.onInterstitialAdShowSucceededEvent += RewardedVideoAdShowEvent;
+            IronSourceEvents.onRewardedVideoAdClickedEvent += RewardedVideoAdClickEvent;
         }
 
         public override string MediationName 
@@ -47,6 +48,16 @@ namespace Ads.IronSrc
         private void RewardedVideoAdClosedEvent()
         {
             NotifyComplete(false);
+        }
+
+        private void RewardedVideoAdShowEvent()
+        {
+            Tracking.Instance.Track("stencil_ad_impression", "type", "interstitial");
+        }
+
+        private void RewardedVideoAdClickEvent(IronSourcePlacement obj)
+        {
+            Tracking.Instance.Track("stencil_ad_click", "type", "interstitial");
         }
     }
 }

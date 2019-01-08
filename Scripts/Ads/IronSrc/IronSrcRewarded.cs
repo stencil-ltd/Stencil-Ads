@@ -14,6 +14,8 @@ namespace Ads.IronSrc
             IronSourceEvents.onRewardedVideoAvailabilityChangedEvent += RewardedVideoAvailabilityChangedEvent;
             IronSourceEvents.onRewardedVideoAdRewardedEvent += RewardedVideoAdRewardedEvent; 
             IronSourceEvents.onRewardedVideoAdShowFailedEvent += RewardedVideoAdShowFailedEvent;
+            IronSourceEvents.onRewardedVideoAdStartedEvent += RewardedVideoAdShowEvent;
+            IronSourceEvents.onRewardedVideoAdClickedEvent += RewardedVideoAdClickEvent;
         }
 
         public override string MediationName 
@@ -53,7 +55,18 @@ namespace Ads.IronSrc
 
         private void RewardedVideoAdRewardedEvent(IronSourcePlacement obj)
         {
+            Tracking.Instance.Track("stencil_ad_reward");
             NotifyComplete(true);
+        }
+
+        private void RewardedVideoAdShowEvent()
+        {
+            Tracking.Instance.Track("stencil_ad_impression", "type", "rewarded");
+        }
+
+        private void RewardedVideoAdClickEvent(IronSourcePlacement obj)
+        {
+            Tracking.Instance.Track("stencil_ad_click", "type", "rewarded");
         }
     }
 }
