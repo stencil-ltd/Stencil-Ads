@@ -17,6 +17,7 @@ namespace Ratings
         {
             base.Register();
             RateSettings.Instance.BindRemoteConfig();
+            StencilRateHelpers.CountSession();
         }
         
         private void OnEnable()
