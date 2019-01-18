@@ -12,7 +12,7 @@ namespace Ads.IronSrc
             IronSourceEvents.onInterstitialAdReadyEvent += RewardedVideoAvailabilityChangedEvent;
             IronSourceEvents.onInterstitialAdShowFailedEvent += RewardedVideoAdShowFailedEvent;
             IronSourceEvents.onInterstitialAdShowSucceededEvent += RewardedVideoAdShowEvent;
-            IronSourceEvents.onRewardedVideoAdClickedEvent += RewardedVideoAdClickEvent;
+            IronSourceEvents.onInterstitialAdClickedEvent += RewardedVideoAdClickEvent;
         }
 
         public override string MediationName 
@@ -55,7 +55,7 @@ namespace Ads.IronSrc
             Tracking.Instance.Track("stencil_ad_impression", "type", "interstitial");
         }
 
-        private void RewardedVideoAdClickEvent(IronSourcePlacement obj)
+        private void RewardedVideoAdClickEvent()
         {
             Tracking.Instance.Track("stencil_ad_click", "type", "interstitial");
         }
