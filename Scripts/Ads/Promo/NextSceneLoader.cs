@@ -1,10 +1,7 @@
 using System;
 using System.Collections;
-using Audio;
-using Scripts.Audio;
 using UI;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace Ads.Promo

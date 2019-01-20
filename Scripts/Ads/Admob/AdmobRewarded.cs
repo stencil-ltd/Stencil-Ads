@@ -26,7 +26,7 @@ namespace Ads.Admob
             _ad.OnAdLoaded += (sender, args) => Objects.Enqueue(NotifyLoad);
             _ad.OnAdRewarded += (sender, reward) => Objects.Enqueue(() => NotifyComplete(true));
             _ad.OnAdClosed += (sender, reward) => Objects.Enqueue(() => NotifyComplete(false));
-            _ad.OnAdFailedToLoad += (sender, args) => Objects.Enqueue(NotifyError);
+            _ad.OnAdFailedToLoad += (sender, args) => Objects.Enqueue(() => NotifyError());
         }
 
         protected override void LoadInternal()
