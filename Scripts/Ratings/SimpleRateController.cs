@@ -5,6 +5,10 @@ using Scripts.RemoteConfig;
 using UI;
 using UnityEngine;
 
+#if ODIN_INSPECTOR
+using Sirenix.OdinInspector;
+#endif
+
 namespace Ratings
 {
     public class SimpleRateController : Controller<SimpleRateController>
