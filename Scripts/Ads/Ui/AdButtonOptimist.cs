@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using Binding;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,6 +21,10 @@ namespace Ads.Ui
         
         [Header("Events")]
         public AdEvent onResult;
+        
+        [CanBeNull]
+        [Bind]
+        public CanvasGroup canvasGroup { get; private set; }
 
         private VideoAd _ad;
         
@@ -27,6 +33,7 @@ namespace Ads.Ui
 
         private void Awake()
         {
+            this.Bind();
             button = button ?? GetComponent<Button>();
             _ad = StencilAds.GetAdByType(adType);
             button.onClick.AddListener(() => StartCoroutine(_ShowAd()));
