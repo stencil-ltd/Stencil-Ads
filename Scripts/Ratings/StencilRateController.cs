@@ -49,7 +49,7 @@ namespace Ratings
 
         public bool Check()
         {
-            if (!GetConfig().CheckConditions()) return false;
+            if (GetConfig().CheckConditions() != RateReadiness.Ready) return false;
             ForceShow();
             return true;
         }

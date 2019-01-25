@@ -1,10 +1,10 @@
 using System;
 using Analytics;
+using Binding;
 using PaperPlaneTools;
 using Scripts.RemoteConfig;
 using UI;
 using UnityEngine;
-
 #if ODIN_INSPECTOR
 using Sirenix.OdinInspector;
 #endif
@@ -16,9 +16,16 @@ namespace Ratings
         public float delayShow = 1f;
         public bool checkAtAwake = true;
         
+        [RemoteField("simple_rate_native")]
+        public bool nativeRate = true;
+        
+        [RemoteField("simple_rate_native_ham")]
+        public bool goHamWithNativeRate = true;
+        
         public override void Register()
         {
             base.Register();
+            this.BindRemoteConfig();
             RateSettings.Instance.BindRemoteConfig();
             StencilRateHelpers.CountSession();
         }
@@ -30,7 +37,10 @@ namespace Ratings
 
         public bool Check()
         {
-            if (!RateSettings.Instance.Config.CheckConditions()) return false;
+            var ready = RateSettings.Instance.Config.CheckConditions();
+            if (ready > RateReadiness.MediumFailures) return false;
+            if (ready > RateReadiness.MinorFailures && !(goHamWithNativeRate && nativeRate && StencilRateHelpers.HasNativeRate()))
+                return false;
             ForceShow();
             return true;
         }
@@ -43,7 +53,7 @@ namespace Ratings
             Tracking.Instance.Track("rate_show");
             StencilRateHelpers.MarkShown();
             #if UNITY_IOS
-            if (StencilRateHelpers.NativeRate()) 
+            if (nativeRate && StencilRateHelpers.NativeRate()) 
                 return;
             #endif
             AlertReview();

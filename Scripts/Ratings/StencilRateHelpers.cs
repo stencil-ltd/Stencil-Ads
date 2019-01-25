@@ -116,6 +116,14 @@ namespace Ratings
             RecordRating();
             Application.OpenURL(settings.RateUrl);
         }
+
+        public static bool HasNativeRate()
+        {
+            #if UNITY_IOS && !UNITY_EDITOR
+            return _reviewControllerIsAvailable();
+            #endif
+            return false;
+        }
         
         #if UNITY_IOS
         public static bool NativeRate()
@@ -147,7 +155,7 @@ namespace Ratings
             LastShow = DateTime.UtcNow;
         }
         
-        public static bool CheckConditions(this RateConfig settings)
+        public static RateReadiness CheckConditions(this RateConfig settings)
         {
             var firstCheck = FirstCheck ?? DateTime.UtcNow;
             FirstCheck = firstCheck;
@@ -156,20 +164,20 @@ namespace Ratings
             if (IsRejected)
             {
                 Debug.Log("Reject: User rejected rating");
-                return false;
+                return RateReadiness.FailRejected;
             }
 
             if (IsRated)
             {
                 Debug.Log("Reject: User already rated");
-                return false;
+                return RateReadiness.FailRated;
             }
 
             if (settings.RequireInternetConnection &&
                 Application.internetReachability == NetworkReachability.NotReachable)
             {
                 Debug.Log("Reject: No internet");
-                return false;
+                return RateReadiness.FailNetwork;
             }
 
             var afterLaunch = settings.HoursAfterLaunch;
@@ -179,7 +187,7 @@ namespace Ratings
                 if (afterLaunch > hoursRuntime)
                 {
                     Debug.Log("Reject: Hours after launch");
-                    return false;
+                    return RateReadiness.FailLaunchTime;
                 }
             }
 
@@ -191,7 +199,7 @@ namespace Ratings
                 if (postpone > 0f && now < last.Value.AddHours(postpone))
                 {
                     Debug.Log("Reject: Postponed.");
-                    return false;
+                    return RateReadiness.FailPostponed;
                 }
             }
 
@@ -199,18 +207,18 @@ namespace Ratings
             if (afterInstall > 0f && now < firstCheck.AddHours(afterInstall))
             {
                 Debug.Log("Reject: Hours after install");
-                return false;
+                return RateReadiness.FailInstallTime;
             }
 
             var minSessions = settings.MinSessionCount;
             if (minSessions > 0 && SessionCount < minSessions)
             {
                 Debug.Log("Reject: Session Count");
-                return false;
+                return RateReadiness.FailSessionCount;
             } 
 
             Debug.Log("Accept Rating!");
-            return true;
+            return RateReadiness.Ready;
         }
     }
 }
