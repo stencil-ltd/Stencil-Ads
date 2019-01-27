@@ -1,4 +1,5 @@
 using System;
+using Binding;
 using Scripts.RemoteConfig;
 using UnityEngine;
 using UnityEngine.Advertisements;
@@ -27,13 +28,13 @@ namespace Ads
 
             public static implicit operator string(AdId id)
             {
-                #if UNITY_IOS
+#if UNITY_IOS
                 return id.Ios;
-                #elif UNITY_ANDROID
+#elif UNITY_ANDROID
                 return id.Android;
-                #else
+#else
                 return "";
-                #endif
+#endif
             }
         }
 
@@ -46,7 +47,7 @@ namespace Ads
             "9E1318CB77013036D10A5DA41CC268A5" // Aaron Pixel 2XL (10/18)
         };
         
-        #if STENCIL_ADMOB
+#if STENCIL_ADMOB
         public AdRequest CreateRequest(string type)
         {
             var builder = new AdRequest.Builder();
@@ -61,7 +62,7 @@ namespace Ads
                 .Track($"ad_request_{type}");
             return builder.Build();
         }
-        #endif
+#endif
 
         public bool BannerAtTop;
         public bool IgnoreTestIds;
@@ -72,6 +73,9 @@ namespace Ads
 
         [Header("Iron Source")] 
         public AdId ironSourceId;
+        
+        [RemoteField("ironsrc_track_network_state")]
+        public bool trackNetworkState = true;
 
         [Header("Unity Ads")] 
         public AdId UnityId;
@@ -92,8 +96,8 @@ namespace Ads
         protected override void OnEnable()
         {
             base.OnEnable();
-            if (Application.isPlaying)
-            {
+            if (!Application.isPlaying) return;
+            this.BindRemoteConfig();
 #if STENCIL_ADMOB
             AppConfiguration = new AppIdConfiguration(AppId.Android, AppId.Ios);
             BannerConfiguration = new BannerConfiguration(BannerId.Android, BannerId.Ios);
@@ -102,9 +106,8 @@ namespace Ads
 #endif
             
 #if UNITY_ADS
-                Advertisement.Initialize(UnityId, !StencilRemote.IsProd());
+          Advertisement.Initialize(UnityId, !StencilRemote.IsProd());
 #endif
-            }
         }
     }
 }

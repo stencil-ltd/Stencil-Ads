@@ -11,6 +11,7 @@ namespace Ads.IronSrc
         {
             if (_init) return;
             _init = true;
+            IronSource.Agent.shouldTrackNetworkState(AdSettings.Instance.trackNetworkState);
             IronSource.Agent.init(appKey, IronSourceAdUnits.REWARDED_VIDEO);
             if (!StencilRemote.IsDeveloper()) return;
             Debug.Log("IronSrc validating integration...");
