@@ -13,6 +13,7 @@ namespace Ads.IronSrc
             _init = true;
             IronSource.Agent.shouldTrackNetworkState(AdSettings.Instance.trackNetworkState);
             IronSource.Agent.init(appKey, IronSourceAdUnits.REWARDED_VIDEO);
+            IronSource.Agent.shouldTrackNetworkState(AdSettings.Instance.trackNetworkState);
             if (!StencilRemote.IsDeveloper()) return;
             Debug.Log("IronSrc validating integration...");
             IronSource.Agent.validateIntegration();
