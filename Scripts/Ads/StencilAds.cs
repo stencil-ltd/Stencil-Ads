@@ -61,9 +61,7 @@ namespace Ads
 #if STENCIL_ADMOB
             Debug.Log("StencilAds (admob) initializing");
             Interstitial = new AdmobInterstitial(_interstitial);
-            Interstitial.Init();
             Rewarded = new AdmobRewarded(_rewarded);
-            Rewarded.Init();    
             SetBannerAdapter(new AdmobBannerStrategy());
             _hasAds = true;
 #elif STENCIL_IRONSRC
@@ -79,14 +77,15 @@ namespace Ads
             Debug.Log($"StencilAds (unity) initializing");
             Advertisement.Initialize(appId, Developers.Enabled);
             Interstitial = UnityVideoAd.Interstitial;
-            Interstitial.Init();
             Rewarded = UnityVideoAd.Rewarded;
-            Rewarded.Init();   
             SetBannerAdapter(new UnityBannerStrategy());
             _hasAds = true;
 #endif
             Debug.Log("StencilAds initialized");
 
+            Interstitial?.Init();
+            Rewarded?.Init();
+            
             StencilPremium.OnPremiumPurchased += OnPremium;
 
             if (_hasAds)
