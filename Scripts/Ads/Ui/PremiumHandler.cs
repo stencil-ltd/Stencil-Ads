@@ -19,6 +19,7 @@ namespace Ads.Ui
         public IAPButton Button;
         [CanBeNull] public Func<bool> CanShowPremium;
 
+        public static event EventHandler<IStoreController> OnStoreInit; 
         public event EventHandler<Product> OnPurchasePremium;
 
         private static IAPListener _listener;
@@ -151,7 +152,7 @@ namespace Ads.Ui
 
         public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
         {
-            
+            OnStoreInit?.Invoke(this, controller);
         }
 #endif
     }
