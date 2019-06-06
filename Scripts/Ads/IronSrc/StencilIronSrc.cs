@@ -1,8 +1,9 @@
 using Scripts.RemoteConfig;
 using UnityEngine;
-using static IronSourceAdUnits;
 
 #if STENCIL_IRONSRC
+using static IronSourceAdUnits;
+
 namespace Ads.IronSrc
 {
     public static class StencilIronSrc
