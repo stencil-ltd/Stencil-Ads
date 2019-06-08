@@ -5,7 +5,8 @@ using PaperPlaneTools;
 using Scripts.RemoteConfig;
 using UI;
 using UnityEngine;
-#if ODIN_INSPECTOR
+
+#if !EXCLUDE_ODIN
 using Sirenix.OdinInspector;
 #endif
 
@@ -45,7 +46,7 @@ namespace Ratings
             return true;
         }
         
-        #if ODIN_INSPECTOR
+        #if !EXCLUDE_ODIN
         [Button]
         #endif
         public void ForceShow()
