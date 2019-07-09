@@ -6,7 +6,7 @@ using Scripts.RemoteConfig;
 using UI;
 using UnityEngine;
 
-#if !EXCLUDE_ODIN
+#if ODIN_INSPECTOR
 using Sirenix.OdinInspector;
 #endif
 
@@ -46,7 +46,7 @@ namespace Ratings
             return true;
         }
         
-        #if !EXCLUDE_ODIN
+        #if ODIN_INSPECTOR
         [Button]
         #endif
         public void ForceShow()
