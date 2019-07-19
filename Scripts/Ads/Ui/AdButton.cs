@@ -1,4 +1,6 @@
 using System;
+using Currencies;
+using JetBrains.Annotations;
 //using Currencies;
 //using JetBrains.Annotations;
 using UnityEngine;
@@ -19,6 +21,8 @@ namespace Ads.Ui
         [Header("Events")]
         public AdEvent OnResult;
 
+        [CanBeNull] public Price Reward;
+
         private VideoAd _ad;
 
         private void Awake()
@@ -38,6 +42,8 @@ namespace Ads.Ui
         private void _OnResult(bool obj)
         {
             OnResult?.Invoke(obj);
+            if (obj && Reward.Currency != null) 
+                Reward.Receive().AndSave();
         }
 
         private void OnEnable()
