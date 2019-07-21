@@ -11,6 +11,8 @@ namespace Ads.Ui
 {
     public class AdButton : MonoBehaviour
     {
+        public static event EventHandler<Price> OnReward; 
+        
         [Header("Data")]
         public AdType AdType = AdType.Rewarded;
         
@@ -42,8 +44,11 @@ namespace Ads.Ui
         private void _OnResult(bool obj)
         {
             OnResult?.Invoke(obj);
-            if (obj && Reward.Currency != null) 
+            if (obj && Reward.Currency != null)
+            {
                 Reward.Receive().AndSave();
+                OnReward?.Invoke(this, Reward);
+            }
         }
 
         private void OnEnable()
