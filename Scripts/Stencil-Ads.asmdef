@@ -1,0 +1,16 @@
+{
+    "name": "Stencil-Ads",
+    "references": [
+        "Stencil-Core",
+        "Stencil-Analytics",
+        "Stencil-Economy"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

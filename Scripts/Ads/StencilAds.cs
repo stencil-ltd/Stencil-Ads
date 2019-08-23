@@ -3,33 +3,12 @@ using Ads.Ui;
 using JetBrains.Annotations;
 using Scripts.RemoteConfig;
 using UnityEngine;
-using UnityEngine.Advertisements;
 using Util;
-using Developers = Dev.Developers;
-#if STENCIL_ADMOB
-using Ads.Admob;
-using GoogleMobileAdsMediationTestSuite.Api;
-#endif
-
-#if UNITY_ADS
-using Ads.UnityAds;
-#endif
-
-#if STENCIL_IRONSRC
-using Ads.IronSrc;
-#endif
 
 namespace Ads
 {
     public static class StencilAds
     {
-        #if STENCIL_ADMOB
-        private static AdConfiguration _appId => AdSettings.Instance.AppConfiguration;
-        private static AdConfiguration _banner => AdSettings.Instance.BannerConfiguration;
-        private static AdConfiguration _interstitial => AdSettings.Instance.InterstitialConfiguration;
-        private static AdConfiguration _rewarded => AdSettings.Instance.RewardConfiguration;
-        #endif
-
         public static VideoAd Interstitial { get; private set; }
         public static VideoAd Rewarded { get; private set; }
         public static IBannerStrategy Banner { get; private set; }
@@ -47,40 +26,15 @@ namespace Ads
         private static bool _init;
         public static bool HasInit => _init;
 
-        public static void Init()
+        public static void Init([CanBeNull] VideoAd rewarded = null, [CanBeNull] VideoAd interstitial = null)
         {
             Debug.Log("Attempt to initialize StencilAds");
             if (_init) return;
             _init = true;
 
-#if UNITY_IPHONE && !UNITY_EDITOR
-//            Debug.Log("StencilAds disabled webview JIT.");
-//            SetEnv.Set("JSC_useJIT", "false");
-#endif
-
-#if STENCIL_ADMOB
-            Debug.Log("StencilAds (admob) initializing");
-            Interstitial = new AdmobInterstitial(_interstitial);
-            Rewarded = new AdmobRewarded(_rewarded);
-            SetBannerAdapter(new AdmobBannerStrategy());
-            _hasAds = true;
-#elif STENCIL_IRONSRC
-            Rewarded = new IronSrcRewarded();
-            Interstitial = new IronSrcInterstitial();
-            _hasAds = true;
-#elif UNITY_ADS
-            #if UNITY_IOS
-            var appId = AdSettings.Instance.UnityId.Ios;
-            #else
-            var appId = AdSettings.Instance.UnityId.Android;
-            #endif
-            Debug.Log($"StencilAds (unity) initializing");
-            Advertisement.Initialize(appId, Developers.Enabled);
-            Interstitial = UnityVideoAd.Interstitial;
-            Rewarded = UnityVideoAd.Rewarded;
-            SetBannerAdapter(new UnityBannerStrategy());
-            _hasAds = true;
-#endif
+            Rewarded = rewarded;
+            Interstitial = interstitial;
+            _hasAds = Rewarded != null || Interstitial != null;
             Debug.Log("StencilAds initialized");
 
             Interstitial?.Init();
