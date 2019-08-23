@@ -30,8 +30,6 @@ namespace Ratings
         {
             get
             {
-                // TODO remove this after migration.
-                if (RateBox.Instance.Statistics.DialogIsRejected) return true;
                 return PlayerPrefsX.GetBool("stencil_rate_reject");
             }
             set
