@@ -3,6 +3,10 @@ using Analytics;
 using UnityEngine;
 using Util;
 
+#if UNITY_IOS
+using System.Runtime.InteropServices;
+#endif
+
 namespace Ratings
 {
     public static class StencilRateHelpers
