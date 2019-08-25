@@ -7,7 +7,6 @@ namespace Ads.IronSrc
     {
         public IronSrcInterstitial()
         {
-            StencilIronSrc.Init(AdSettings.Instance.ironSourceId);
             IronSourceEvents.onInterstitialAdClosedEvent += RewardedVideoAdClosedEvent; 
             IronSourceEvents.onInterstitialAdReadyEvent += RewardedVideoAvailabilityChangedEvent;
             IronSourceEvents.onInterstitialAdShowFailedEvent += RewardedVideoAdShowFailedEvent;

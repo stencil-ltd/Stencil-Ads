@@ -1,7 +1,5 @@
 #if STENCIL_IRONSRC
 using Analytics;
-using UnityEngine;
-using Util;
 
 namespace Ads.IronSrc
 {
@@ -9,7 +7,6 @@ namespace Ads.IronSrc
     {
         public IronSrcRewarded()
         {
-            StencilIronSrc.Init(AdSettings.Instance.ironSourceId);
             IronSourceEvents.onRewardedVideoAdClosedEvent += RewardedVideoAdClosedEvent; 
             IronSourceEvents.onRewardedVideoAvailabilityChangedEvent += RewardedVideoAvailabilityChangedEvent;
             IronSourceEvents.onRewardedVideoAdRewardedEvent += RewardedVideoAdRewardedEvent; 
