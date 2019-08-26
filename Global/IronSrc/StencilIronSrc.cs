@@ -1,3 +1,5 @@
+
+using System;
 #if STENCIL_IRONSRC
 using UI;
 using static IronSourceAdUnits;
@@ -20,6 +22,13 @@ namespace Ads.IronSrc
             Debug.Log("IronSrc validating integration...");
             IronSource.Agent.validateIntegration();
             StencilAds.Init(new IronSrcRewarded(), new IronSrcInterstitial());
+        }
+
+        private void OnApplicationPause(bool pauseStatus)
+        {
+#if STENCIL_IRONSRC
+            IronSource.Agent.onApplicationPause(pauseStatus);
+#endif
         }
     }
 }
