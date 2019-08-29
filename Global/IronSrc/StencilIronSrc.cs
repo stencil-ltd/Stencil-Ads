@@ -1,5 +1,3 @@
-
-using System;
 #if STENCIL_IRONSRC
 using UI;
 using static IronSourceAdUnits;
@@ -18,10 +16,15 @@ namespace Ads.IronSrc
             _init = true;
             IronSource.Agent.shouldTrackNetworkState(AdSettings.Instance.trackNetworkState);
             IronSource.Agent.init(AdSettings.Instance.ironSourceId, REWARDED_VIDEO, INTERSTITIAL);
+            Validate();
+            StencilAds.Init(new IronSrcRewarded(), new IronSrcInterstitial());
+        }
+
+        private void Validate()
+        {
             if (!StencilRemote.IsDeveloper()) return;
             Debug.Log("IronSrc validating integration...");
             IronSource.Agent.validateIntegration();
-            StencilAds.Init(new IronSrcRewarded(), new IronSrcInterstitial());
         }
 
         private void OnApplicationPause(bool pauseStatus)
