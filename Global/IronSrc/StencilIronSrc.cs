@@ -10,8 +10,9 @@ namespace Ads.IronSrc
     {
         private static bool _init;
 
-        private void Start()
+        protected override void OnAwake()
         {
+            base.OnAwake();
             if (_init) return;
             _init = true;
             IronSource.Agent.shouldTrackNetworkState(AdSettings.Instance.trackNetworkState);
