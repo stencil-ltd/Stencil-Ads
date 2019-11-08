@@ -1,4 +1,5 @@
 using System;
+using Purchasing;
 using Scripts.RemoteConfig;
 using UnityEngine;
 using Util;
@@ -28,10 +29,34 @@ namespace Ads.Ui
         }
         public static event EventHandler OnPremiumPurchased;
 
+        public static void UseProductIds(params string[] ids)
+        {
+            var premium = HasPremium;
+            foreach (var id in ids)
+            {
+                var has = StencilIap.CheckPurchase(id);
+                if (has != null) premium |= has.Value;
+            }
+            MakePremium(premium);   
+        }
+
+        private static void MakePremium(bool premium)
+        {
+            if (premium) Purchase(); 
+            else Unpurchase();
+        }
+
         public static void Purchase()
         {
             Debug.Log("Premium approved");
             HasPremium = true;
+            PremiumToggle.ForceEnabled = null;
+            NotifyPurchase();
+        }
+
+        public static void Unpurchase()
+        {
+            HasPremium = false;
             PremiumToggle.ForceEnabled = null;
             NotifyPurchase();
         }
